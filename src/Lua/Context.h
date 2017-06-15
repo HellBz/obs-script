@@ -26,26 +26,20 @@ struct lua_State;
 
 namespace Script
 {
-	namespace Lua
-	{
+    namespace Lua
+    {
 
-		class Context : public IContext
-		{
-		public:
+        class Context : public IContext
+        {
+        public:
+            bool Open() override;
+            void Init() override;
+            void Close() override;
 
-			bool Open() override;
-			void Init() override;
-			void Close() override;
+            lua_State* GetState() const;
 
-			lua_State* GetState() const
-			{
-				return m_state;
-			}
-
-		private:
-
-			lua_State* m_state;
-
-		};
-	}
+        private:
+            lua_State* m_state;
+        };
+    }
 }

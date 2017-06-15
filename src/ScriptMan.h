@@ -20,28 +20,26 @@
 
 #pragma once
 
-#include <memory>
 #include <list>
+#include <memory>
 
 namespace Script
 {
-	class IContext;
-	class IScript;
+    class IContext;
+    class IScript;
 
-	class Manager
-	{
-	public:
+    class Manager
+    {
+    public:
+        Manager();
 
-		Manager();
+        void Initialize();
+        void Finalize();
 
-		void Initialize();
-		void Finalize();
+        void SetContext(const std::shared_ptr<IContext>& context);
 
-		void SetContext( const std::shared_ptr<IContext>& context );
-
-	private:
-
-		std::shared_ptr<IContext> m_context;
-		std::list<std::shared_ptr<IScript>> m_scripts;
-	};
+    private:
+        std::shared_ptr<IContext> m_context;
+        std::list<std::shared_ptr<IScript>> m_scripts;
+    };
 }

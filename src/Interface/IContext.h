@@ -22,11 +22,11 @@
 
 namespace Script
 {
-	class IContext
-	{
-	public:
-		virtual bool Open() = 0;
-		virtual void Init() = 0;
-		virtual void Close() = 0;
-	};
+    class IContext
+    {
+    public:
+        virtual bool Open()  = 0;
+        virtual void Init()  = 0;
+        virtual void Close() = 0;
+    };
 }

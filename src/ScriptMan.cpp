@@ -28,41 +28,37 @@
 namespace Script
 {
 
-	Manager::Manager()
-		: m_context(nullptr)
-	{
+    Manager::Manager()
+        : m_context(nullptr)
+    {
+    }
 
-	}
+    void Manager::Initialize()
+    {
+        if (!m_context)
+            return;
 
-	void Manager::Initialize()
-	{
-		if ( !m_context )
-			return;
+        m_context->Open();
+        m_context->Init();
 
-		m_context->Open();
-		m_context->Init();
+        for (const auto& iter : m_scripts)
+        {
+            iter->SetFile(std::string(""));
+            iter->Load(m_context);
+        }
+    }
 
-		for ( const auto& iter : m_scripts )
-		{
-			iter->SetFile(std::string(""));
-			iter->Load( m_context );
-		}
-	}
+    void Manager::Finalize()
+    {
+        if (!m_context)
+            return;
 
-	void Manager::Finalize()
-	{
-		if ( !m_context )
-			return;
+        m_context->Close();
+        m_context = nullptr;
+    }
 
-		m_context->Close();
-		m_context = nullptr;
-	}
-
-	void Manager::SetContext( const std::shared_ptr<IContext>& context )
-	{
-		m_context = context;
-	}
-
-
-
+    void Manager::SetContext(const std::shared_ptr<IContext>& context)
+    {
+        m_context = context;
+    }
 }

@@ -26,17 +26,16 @@
 
 namespace Script
 {
-	namespace Lua
-	{
-		class Script : public IScript
-		{
-		public:
-			void SetFile( const std::string& file ) override;
-			bool Load( const std::shared_ptr<IContext>& context ) const override;
+    namespace Lua
+    {
+        class Script : public IScript
+        {
+        public:
+            void SetFile(const std::string& file) override;
+            bool Load(const std::shared_ptr<IContext>& context) const override;
 
-		private:
-
-			std::string m_filePath;
-		};
-	}
+        private:
+            std::string m_filePath;
+        };
+    }
 }

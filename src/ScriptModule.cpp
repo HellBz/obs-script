@@ -27,23 +27,19 @@
 namespace Script
 {
 
-	bool Module::OnLoad()
-	{
-		m_manager.SetContext( std::make_shared<Lua::Context>() );
-		m_manager.Initialize();
-		return true;
-	}
+    bool Module::OnLoad()
+    {
+        m_manager.SetContext(std::make_shared<Lua::Context>());
+        m_manager.Initialize();
+        return true;
+    }
 
-	void Module::OnUnload()
-	{
-		m_manager.Finalize();
-	}
+    void Module::OnUnload() { m_manager.Finalize(); }
 
-	/*static*/ Module& Module::Get()
-	{
-		static Module Instance;
+    /*static*/ Module& Module::Get()
+    {
+        static Module Instance;
 
-		return Instance;
-	}
-
+        return Instance;
+    }
 }

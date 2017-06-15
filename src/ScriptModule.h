@@ -26,17 +26,16 @@
 
 namespace Script
 {
-	class Module
-	{
-	public:
-		bool OnLoad();
+    class Module
+    {
+    public:
+        bool OnLoad();
 
-		void OnUnload();
+        void OnUnload();
 
-		static Module& Get();
+        static Module& Get();
 
-	private:
-
-		Manager m_manager;
-	};
+    private:
+        Manager m_manager;
+    };
 }

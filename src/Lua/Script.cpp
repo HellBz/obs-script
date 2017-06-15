@@ -28,27 +28,24 @@
 
 namespace Script
 {
-	namespace Lua
-	{
-		void Script::SetFile( const std::string& file )
-		{
-			m_filePath = file;
-		}
+    namespace Lua
+    {
+        void Script::SetFile(const std::string& file) { m_filePath = file; }
 
-		bool Script::Load( const std::shared_ptr<IContext>& context ) const
-		{
-			if ( !context )
-				return false;
+        bool Script::Load(const std::shared_ptr<IContext>& context) const
+        {
+            if (!context)
+                return false;
 
-			if ( m_filePath.empty() || m_filePath.length() == 0 )
-				return false;
+            if (m_filePath.empty() || m_filePath.length() == 0)
+                return false;
 
-			const std::shared_ptr<Context>& luaContext = std::static_pointer_cast<Context>( context );
+            const std::shared_ptr<Context>& luaContext =
+                std::static_pointer_cast<Context>(context);
 
-			int32 result = luaL_loadfile( luaContext->GetState(), m_filePath.c_str() );
-			return result == LUA_OK;
-		}
-
-	}
-	
+            int32 result =
+                luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
+            return result == LUA_OK;
+        }
+    }
 }

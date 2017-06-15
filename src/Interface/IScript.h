@@ -20,22 +20,19 @@
 
 #pragma once
 
-#include <string>
 #include <memory>
+#include <string>
 
 namespace Script
 {
-	class IContext;
+    class IContext;
 
-	class IScript
-	{
-	public:
+    class IScript
+    {
+    public:
+        virtual void SetFile(const std::string& file)                     = 0;
+        virtual bool Load(const std::shared_ptr<IContext>& context) const = 0;
 
-		virtual void SetFile( const std::string& file ) = 0;
-		virtual bool Load( const std::shared_ptr<IContext>& context ) const = 0;
-
-	private:
-
-
-	};
+    private:
+    };
 }

@@ -26,25 +26,20 @@
 
 namespace Script
 {
-	namespace Lua
-	{
+    namespace Lua
+    {
 
-		bool Context::Open()
-		{
-			m_state = luaL_newstate();
+        bool Context::Open()
+        {
+            m_state = luaL_newstate();
 
-			return true;
-		}
+            return true;
+        }
 
-		void Context::Init()
-		{
-			luaL_openlibs( m_state );
-		}
+        void Context::Init() { luaL_openlibs(m_state); }
 
-		void Context::Close()
-		{
-			lua_close( m_state );
-		}
+        void Context::Close() { lua_close(m_state); }
 
-	}
+        lua_State* Context::GetState() const { return m_state; }
+    }
 }

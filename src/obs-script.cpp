@@ -25,26 +25,22 @@
 OBS_DECLARE_MODULE()
 OBS_MODULE_AUTHOR("Samantha James")
 
-
-bool obs_module_load( void )
+bool obs_module_load(void)
 {
-	return Script::Module::Get().OnLoad();
+    return Script::Module::Get().OnLoad();
 }
 
-
-void obs_module_unload( void )
+void obs_module_unload(void)
 {
-	Script::Module::Get().OnUnload();
+    Script::Module::Get().OnUnload();
 }
 
-
-const char* obs_module_name( void )
+const char* obs_module_name(void)
 {
-	return "Script Plugin";
+    return "Script Plugin";
 }
 
-
-const char* obs_module_description( void )
+const char* obs_module_description(void)
 {
-	return "a plugin for OBS that allows for scripting";
+    return "a plugin for OBS that allows for scripting";
 }
