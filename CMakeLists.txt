@@ -37,7 +37,10 @@ set(INCLUDES
     src/Interface/IContext.h
     src/Interface/IScript.h
     src/Lua/Context.h
-    src/Lua/Script.h)
+    src/Lua/Script.h
+    src/Reflection/ClassWalker.h
+    src/Reflection/Function.h
+	src/Reflection/ClassRegistry.h)
 
 set(SOURCES
     src/obs-script.cpp
