@@ -32,6 +32,7 @@ endmacro()
 
 set(INCLUDES
     src/types.h
+    src/TemplateUtils.h
     src/ScriptModule.h
     src/ScriptMan.h
     src/Interface/IContext.h
@@ -40,14 +41,16 @@ set(INCLUDES
     src/Lua/Script.h
     src/Reflection/ClassWalker.h
     src/Reflection/Function.h
-	src/Reflection/ClassRegistry.h)
+    src/Reflection/ClassRegistry.h
+    src/Exposed/Text.h)
 
 set(SOURCES
     src/obs-script.cpp
     src/ScriptModule.cpp
     src/ScriptMan.cpp
     src/Lua/Context.cpp
-    src/Lua/Script.cpp)
+    src/Lua/Script.cpp
+    src/Exposed/Text.cpp)
 
 source_group_tree(Source src)
 

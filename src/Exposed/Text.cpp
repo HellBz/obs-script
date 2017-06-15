@@ -20,33 +20,19 @@
 
 #include "types.h"
 
-#include "ScriptModule.h"
+#include "Text.h"
 
-#include "Lua/Context.h"
-
-#include "Reflection/ClassRegistry.h"
-
-#include "Exposed/Text.h"
-
-namespace Script
+/*static*/ TextSource* TextSource::New()
 {
-    static void RegisterClasses() { Reflection::ClassRegistry::Register<TextSource>(); }
+    return nullptr;
+}
 
-    bool Module::OnLoad()
-    {
-        RegisterClasses();
+void TextSource::SetText(const std::string& text)
+{
+    m_text = text;
+}
 
-        m_manager.SetContext(std::make_shared<Lua::Context>());
-        m_manager.Initialize();
-        return true;
-    }
-
-    void Module::OnUnload() { m_manager.Finalize(); }
-
-    /*static*/ Module& Module::Get()
-    {
-        static Module Instance;
-
-        return Instance;
-    }
+const std::string& TextSource::GetText() const
+{
+    return m_text;
 }

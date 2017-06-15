@@ -20,12 +20,32 @@
 
 #pragma once
 
+#include "ClassWalker.h"
+#include "TemplateUtils.h"
+
 namespace Script
 {
     namespace Reflection
     {
         class ClassRegistry
         {
+        public:
+            template <typename T>
+            static void Register()
+            {
+                const std::string typeName = GetTypeName<T>();
+                ClassWalker typeOutline;
+                RegisterClass<T>::Register(typeOutline);
+            }
+        };
+
+        template <typename T>
+        struct RegisterClass
+        {
+            static void Register(ClassWalker&)
+            {
+                static_assert(!sizeof(T), "class is not registered properly");
+            }
         };
     }
 }

@@ -18,35 +18,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "types.h"
-
-#include "ScriptModule.h"
-
-#include "Lua/Context.h"
+#pragma once
 
 #include "Reflection/ClassRegistry.h"
 
-#include "Exposed/Text.h"
-
-namespace Script
+class TextSource
 {
-    static void RegisterClasses() { Reflection::ClassRegistry::Register<TextSource>(); }
+public:
+    static TextSource* New();
 
-    bool Module::OnLoad()
+    void SetText(const std::string& text);
+    const std::string& GetText() const;
+
+private:
+    std::string m_text;
+};
+
+template <>
+struct Script::Reflection::RegisterClass<TextSource>
+{
+    static void Register(ClassWalker& data)
     {
-        RegisterClasses();
-
-        m_manager.SetContext(std::make_shared<Lua::Context>());
-        m_manager.Initialize();
-        return true;
+        data.AddFunction("New", &TextSource::New);
+        data.AddFunction("SetText", &TextSource::SetText);
+        data.AddFunction("GetText", &TextSource::GetText);
     }
-
-    void Module::OnUnload() { m_manager.Finalize(); }
-
-    /*static*/ Module& Module::Get()
-    {
-        static Module Instance;
-
-        return Instance;
-    }
-}
+};

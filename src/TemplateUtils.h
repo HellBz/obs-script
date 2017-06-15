@@ -18,35 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "types.h"
+#pragma once
 
-#include "ScriptModule.h"
-
-#include "Lua/Context.h"
-
-#include "Reflection/ClassRegistry.h"
-
-#include "Exposed/Text.h"
+#include <string.h>
 
 namespace Script
 {
-    static void RegisterClasses() { Reflection::ClassRegistry::Register<TextSource>(); }
-
-    bool Module::OnLoad()
+    namespace Detail
     {
-        RegisterClasses();
+        constexpr size_t GetPrefixSize()
+        {
+            return sizeof("Script::Detail::GetTypeNameHelper<") - 1u;
+        }
 
-        m_manager.SetContext(std::make_shared<Lua::Context>());
-        m_manager.Initialize();
-        return true;
+        constexpr size_t GetPostfixSize() { return sizeof(">::GetTypeName") - 1u; }
+
+        template <typename T>
+        struct GetTypeNameHelper
+        {
+            static const char* GetTypeName()
+            {
+                static constexpr size_t size =
+                    sizeof(__FUNCTION__) - GetPrefixSize() - GetPostfixSize();
+                static char typeName[ size ] = {};
+                memcpy(typeName, __FUNCTION__ + GetPrefixSize(), size - 1u);
+                return typeName;
+            }
+        };
     }
 
-    void Module::OnUnload() { m_manager.Finalize(); }
-
-    /*static*/ Module& Module::Get()
+    template <typename T>
+    const char* GetTypeName()
     {
-        static Module Instance;
-
-        return Instance;
+        return Detail::GetTypeNameHelper<T>::GetTypeName();
     }
 }

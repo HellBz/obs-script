@@ -39,7 +39,7 @@ namespace Script
             {
                 std::shared_ptr<IFunction>& entry = m_functions[ name ];
                 if (!entry)
-                    entry = std::make_shared<MemberFunction>(func);
+                    entry = std::make_shared<MemberFunction<TReturn, TObject, TArgs...>>(func);
             }
 
             template <typename TReturn, typename TObject, typename... TArgs>
@@ -48,7 +48,16 @@ namespace Script
                 std::shared_ptr<IFunction>& entry = m_functions[ name ];
 
                 if (!entry)
-                    entry = std::make_shared<CMemberFunction>(func);
+                    entry = std::make_shared<CMemberFunction<TReturn, TObject, TArgs...>>(func);
+            }
+
+            template <typename TReturn, typename... TArgs>
+            void AddFunction(const std::string& name, TReturn (*func)(TArgs...))
+            {
+                std::shared_ptr<IFunction>& entry = m_functions[ name ];
+
+                if (!entry)
+                    entry = std::make_shared<StaticFunction<TReturn, TArgs...>>(func);
             }
 
         private:

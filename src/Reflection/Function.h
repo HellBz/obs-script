@@ -36,7 +36,7 @@ namespace Script
 
         public:
             MemberFunction(TFunction func)
-                : m_functionPtr(func)
+                : m_funcPtr(func)
             {
             }
 
@@ -56,13 +56,33 @@ namespace Script
 
         public:
             CMemberFunction(TFunction func)
-                : m_functionPtr(func)
+                : m_funcPtr(func)
             {
             }
 
             TReturn Invoke(const TObject* object, TArgs&&... args) const
             {
                 return (object->m_funcPtr)(std::forward<TArgs>(args)...);
+            }
+
+        private:
+            TFunction m_funcPtr;
+        };
+
+        template <typename TReturn, typename... TArgs>
+        class StaticFunction : public IFunction
+        {
+            using TFunction = TReturn (*)(TArgs...);
+
+        public:
+            StaticFunction(TFunction func)
+                : m_funcPtr(func)
+            {
+            }
+
+            TReturn Invoke(TArgs&&... args) const
+            {
+                return (*m_funcPtr)(std::forward<TArgs>(args)...);
             }
 
         private:
