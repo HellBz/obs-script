@@ -35,31 +35,24 @@ namespace Script
         {
         public:
             template <typename TReturn, typename TObject, typename... TArgs>
-            void AddFunction(const std::string& name,
-                             TReturn (TObject::*func)(TArgs...))
+            void AddFunction(const std::string& name, TReturn (TObject::*func)(TArgs...))
             {
                 std::shared_ptr<IFunction>& entry = m_functions[ name ];
                 if (!entry)
-                {
                     entry = std::make_shared<MemberFunction>(func);
-                }
             }
 
             template <typename TReturn, typename TObject, typename... TArgs>
-            void AddFunction(const std::string& name,
-                             TReturn (TObject::*func)(TArgs...) const)
+            void AddFunction(const std::string& name, TReturn (TObject::*func)(TArgs...) const)
             {
                 std::shared_ptr<IFunction>& entry = m_functions[ name ];
 
                 if (!entry)
-                {
                     entry = std::make_shared<CMemberFunction>(func);
-                }
             }
 
         private:
-            std::unordered_map<std::string, std::shared_ptr<IFunction>>
-                m_functions;
+            std::unordered_map<std::string, std::shared_ptr<IFunction>> m_functions;
         };
     }
 }

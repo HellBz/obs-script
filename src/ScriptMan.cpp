@@ -57,8 +57,5 @@ namespace Script
         m_context = nullptr;
     }
 
-    void Manager::SetContext(const std::shared_ptr<IContext>& context)
-    {
-        m_context = context;
-    }
+    void Manager::SetContext(const std::shared_ptr<IContext>& context) { m_context = context; }
 }

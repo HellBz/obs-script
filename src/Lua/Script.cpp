@@ -40,11 +40,9 @@ namespace Script
             if (m_filePath.empty() || m_filePath.length() == 0)
                 return false;
 
-            const std::shared_ptr<Context>& luaContext =
-                std::static_pointer_cast<Context>(context);
+            const std::shared_ptr<Context>& luaContext = std::static_pointer_cast<Context>(context);
 
-            int32 result =
-                luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
+            int32 result = luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
             return result == LUA_OK;
         }
     }

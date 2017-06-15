@@ -20,7 +20,7 @@ BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Allman
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializersBeforeComma: true
-ColumnLimit: 80
+ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
