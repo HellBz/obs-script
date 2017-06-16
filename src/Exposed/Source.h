@@ -20,35 +20,43 @@
 
 #pragma once
 
-#include "Reflection/ClassRegistry.h"
+#include "types.h"
 
-#include "Exposed/Source.h"
+#include "Reflection/ClassRegistry.h"
 
 using namespace Script;
 using namespace Script::Reflection;
 
-// these aren't nested in a namespace to avoid annoying class names for reflection.
-class TextSource : public Source
+struct obs_source;
+
+class Source
 {
 public:
-    static TextSource* New();
+    Source();
 
-    void SetText(const std::string& text);
-    const std::string& GetText() const;
+    const char* GetId() const;
+    const char* GetName() const;
+
+    uint32 GetWidth() const;
+    uint32 GetHeight() const;
+
+    void Show();
+    void Hide();
 
 private:
-    std::string m_text;
+    obs_source* m_source;
 };
 
 template <>
-struct RegisterClass<TextSource>
+struct RegisterClass<Source>
 {
     static void Register(ClassWalker& walker)
     {
-        RegisterClass<Source>::Register(walker);
-
-        walker.AddFunction("New", &TextSource::New);
-        walker.AddFunction("SetText", &TextSource::SetText);
-        walker.AddFunction("GetText", &TextSource::GetText);
+        walker.AddFunction("GetId", &Source::GetId);
+        walker.AddFunction("GetName", &Source::GetName);
+        walker.AddFunction("GetWidth", &Source::GetWidth);
+        walker.AddFunction("GetHeight", &Source::GetHeight);
+        walker.AddFunction("Show", &Source::Show);
+        walker.AddFunction("Hide", &Source::Hide);
     }
 };

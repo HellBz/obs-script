@@ -42,7 +42,8 @@ set(INCLUDES
     src/Reflection/ClassWalker.h
     src/Reflection/Function.h
     src/Reflection/ClassRegistry.h
-    src/Exposed/Text.h)
+    src/Exposed/Text.h
+    src/Exposed/Source.h)
 
 set(SOURCES
     src/obs-script.cpp
@@ -50,7 +51,8 @@ set(SOURCES
     src/ScriptMan.cpp
     src/Lua/Context.cpp
     src/Lua/Script.cpp
-    src/Exposed/Text.cpp)
+    src/Exposed/Text.cpp
+    src/Exposed/Source.cpp)
 
 source_group_tree(Source src)
 

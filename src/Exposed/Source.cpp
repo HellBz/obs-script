@@ -18,37 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#pragma once
+#include "Source.h"
 
-#include "Reflection/ClassRegistry.h"
+#include <obs-internal.h>
 
-#include "Exposed/Source.h"
-
-using namespace Script;
-using namespace Script::Reflection;
-
-// these aren't nested in a namespace to avoid annoying class names for reflection.
-class TextSource : public Source
+Source::Source()
+    : m_source(nullptr)
 {
-public:
-    static TextSource* New();
+}
 
-    void SetText(const std::string& text);
-    const std::string& GetText() const;
-
-private:
-    std::string m_text;
-};
-
-template <>
-struct RegisterClass<TextSource>
+const char* Source::GetId() const
 {
-    static void Register(ClassWalker& walker)
-    {
-        RegisterClass<Source>::Register(walker);
+    if (!m_source)
+        return "";
 
-        walker.AddFunction("New", &TextSource::New);
-        walker.AddFunction("SetText", &TextSource::SetText);
-        walker.AddFunction("GetText", &TextSource::GetText);
-    }
-};
+    return m_source->info.id;
+}
+
+const char* Source::GetName() const
+{
+    if (!m_source)
+        return "";
+
+    return m_source->info.get_name(m_source->info.type_data);
+}
+
+uint32 Source::GetWidth() const
+{
+    return uint32();
+}
+
+uint32 Source::GetHeight() const
+{
+    return uint32();
+}
+
+void Source::Show()
+{
+}
+
+void Source::Hide()
+{
+}
