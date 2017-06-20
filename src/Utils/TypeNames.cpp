@@ -18,38 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#pragma once
-
-#include <string.h>
+#include "TypeNames.h"
 
 namespace Script
 {
-    namespace Detail
+    namespace Utils
     {
-        constexpr size_t GetPrefixSize()
+        const char* CleanTypeName(const char* const toClean)
         {
-            return sizeof("Script::Detail::GetTypeNameHelper<") - 1u;
+            if (strstr(toClean, "class"))
+                return toClean + sizeof("class");
+
+            if (strstr(toClean, "struct"))
+                return toClean + sizeof("struct");
+
+            return toClean;
         }
-
-        constexpr size_t GetPostfixSize() { return sizeof(">::GetTypeName") - 1u; }
-
-        template <typename T>
-        struct GetTypeNameHelper
-        {
-            static const char* GetTypeName()
-            {
-                static constexpr size_t size =
-                    sizeof(__FUNCTION__) - GetPrefixSize() - GetPostfixSize();
-                static char typeName[ size ] = {};
-                memcpy(typeName, __FUNCTION__ + GetPrefixSize(), size - 1u);
-                return typeName;
-            }
-        };
-    }
-
-    template <typename T>
-    const char* GetTypeName()
-    {
-        return Detail::GetTypeNameHelper<T>::GetTypeName();
     }
 }
