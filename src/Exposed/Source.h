@@ -22,17 +22,28 @@
 
 #include "types.h"
 
+#include "RefCounted.h"
 #include "Reflection/ClassRegistry.h"
 
 using namespace Script;
 using namespace Script::Reflection;
 
-struct obs_source;
+typedef struct obs_source obs_source_t;
+typedef struct obs_data obs_data_t;
 
-class Source
+class Source : public Script::RefCounted
 {
 public:
+    static Source* New(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys);
+
     Source();
+    explicit Source(obs_source_t* source);
+    ~Source();
+
+    // Script::RefCounted
+    void AddRef() override;
+    void ReleaseRef() override;
+    // ~Script::Refcounted
 
     const char* GetId() const;
     const char* GetName() const;
@@ -43,8 +54,17 @@ public:
     void Show();
     void Hide();
 
-private:
-    obs_source* m_source;
+    bool IsActive() const;
+    bool IsShowing() const;
+
+    void Mute();
+    void Unmute();
+    bool IsMuted() const;
+
+protected:
+    void DeleteSelf() override;
+
+    obs_source_t* m_source;
 };
 
 template <>
@@ -58,5 +78,10 @@ struct RegisterClass<Source>
         walker.AddFunction("GetHeight", &Source::GetHeight);
         walker.AddFunction("Show", &Source::Show);
         walker.AddFunction("Hide", &Source::Hide);
+        walker.AddFunction("IsActive", &Source::IsActive);
+        walker.AddFunction("IsShowing", &Source::IsShowing);
+        walker.AddFunction("Mute", &Source::Mute);
+        walker.AddFunction("Unmute", &Source::Unmute);
+        walker.AddFunction("IsMuted", &Source::IsMuted);
     }
 };

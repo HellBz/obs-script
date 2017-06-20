@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <cassert>
+
 namespace Script
 {
     using int8   = char;
@@ -31,4 +33,6 @@ namespace Script
     using int64  = long long;
     using uint64 = unsigned long long;
     using null   = decltype(nullptr);
+
+#define UNIMPLEMENTED() assert(!"This function is not implemented.")
 }

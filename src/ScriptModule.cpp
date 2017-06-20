@@ -26,11 +26,16 @@
 
 #include "Reflection/ClassRegistry.h"
 
+#include "Exposed/Source.h"
 #include "Exposed/Text.h"
 
 namespace Script
 {
-    static void RegisterClasses() { Reflection::ClassRegistry::Register<TextSource>(); }
+    static void RegisterClasses()
+    {
+        Reflection::ClassRegistry::Register<Source>();
+        Reflection::ClassRegistry::Register<TextSource>();
+    }
 
     bool Module::OnLoad()
     {

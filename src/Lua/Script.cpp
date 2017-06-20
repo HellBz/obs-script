@@ -42,7 +42,7 @@ namespace Script
 
             const std::shared_ptr<Context>& luaContext = std::static_pointer_cast<Context>(context);
 
-            int32 result = luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
+            auto result = luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
             return result == LUA_OK;
         }
     }

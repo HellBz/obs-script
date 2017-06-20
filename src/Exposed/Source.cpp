@@ -20,43 +20,130 @@
 
 #include "Source.h"
 
-#include <obs-internal.h>
+extern "C" {
+#include <obs.h>
+}
+
+/*static*/ Source* Source::New(const char* id, const char* name, obs_data_t* settings,
+                               obs_data_t* hotkeys)
+{
+    auto obsSource = obs_source_create(id, name, settings, hotkeys);
+
+    auto result = new Source(obsSource);
+    // TODO: add ref?
+    return result;
+}
 
 Source::Source()
     : m_source(nullptr)
 {
 }
 
+Source::Source(obs_source_t* source)
+    : m_source(source)
+{
+}
+
+Source::~Source()
+{
+    m_source = nullptr;
+}
+
+void Source::AddRef()
+{
+    obs_source_addref(m_source);
+}
+
+void Source::ReleaseRef()
+{
+    obs_source_release(m_source);
+}
+
 const char* Source::GetId() const
 {
     if (!m_source)
-        return "";
+        return nullptr;
 
-    return m_source->info.id;
+    return obs_source_get_id(m_source);
 }
 
 const char* Source::GetName() const
 {
     if (!m_source)
-        return "";
+        return nullptr;
 
-    return m_source->info.get_name(m_source->info.type_data);
+    return obs_source_get_name(m_source);
 }
 
 uint32 Source::GetWidth() const
 {
-    return uint32();
+    if (!m_source)
+        return 0;
+
+    return obs_source_get_width(m_source);
 }
 
 uint32 Source::GetHeight() const
 {
-    return uint32();
+    if (!m_source)
+        return 0;
+
+    return obs_source_get_height(m_source);
 }
 
 void Source::Show()
 {
+    UNIMPLEMENTED();
 }
 
 void Source::Hide()
 {
+    UNIMPLEMENTED();
+}
+
+bool Source::IsActive() const
+{
+    if (!m_source)
+        return false;
+
+    return obs_source_active(m_source);
+}
+
+bool Source::IsShowing() const
+{
+    if (!m_source)
+        return false;
+
+    return obs_source_showing(m_source);
+}
+
+void Source::Mute()
+{
+    if (!m_source)
+        return;
+
+    const auto mute = true;
+    obs_source_set_muted(m_source, mute);
+}
+
+void Source::Unmute()
+{
+    if (!m_source)
+        return;
+
+    const auto mute = false;
+    obs_source_set_muted(m_source, mute);
+}
+
+bool Source::IsMuted() const
+{
+    if (!m_source)
+        return true;
+
+    return obs_source_muted(m_source);
+}
+
+void Source::DeleteSelf()
+{
+    delete this;
 }

@@ -23,6 +23,8 @@
 #include "ClassWalker.h"
 #include "TemplateUtils.h"
 
+#include <string.h>
+
 namespace Script
 {
     namespace Reflection
@@ -33,9 +35,28 @@ namespace Script
             template <typename T>
             static void Register()
             {
-                const std::string typeName = GetTypeName<T>();
+                auto typeName = GetTypeName<T>();
+                typeName      = CleanTypeName(typeName);
+
                 ClassWalker typeOutline;
                 RegisterClass<T>::Register(typeOutline);
+            }
+
+        private:
+            // a quick way to remove class/struct from type names.
+            static const char* CleanTypeName(const char* const toClean)
+            {
+                const auto classPtr = strstr(toClean, "class");
+                if (classPtr)
+                {
+                    return classPtr + sizeof("class");
+                }
+
+                const auto structPtr = strstr(toClean, "struct");
+                if (structPtr)
+                {
+                    return structPtr + sizeof("struct");
+                }
             }
         };
 

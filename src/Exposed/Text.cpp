@@ -22,6 +22,17 @@
 
 #include "Text.h"
 
+extern "C" {
+#include <obs.h>
+}
+
+namespace Constants
+{
+    static const char* const Text = "text";
+    static const char* const Font = "font";
+    static const char* const File = "file";
+}
+
 /*static*/ TextSource* TextSource::New()
 {
     return nullptr;
@@ -29,7 +40,12 @@
 
 void TextSource::SetText(const std::string& text)
 {
-    m_text = text;
+    auto props = obs_source_properties(m_source);
+
+    if (!props)
+        return;
+
+    // auto data = obs_get_source_defaults();
 }
 
 const std::string& TextSource::GetText() const
