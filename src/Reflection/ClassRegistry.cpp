@@ -18,42 +18,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#pragma once
+#include "ClassRegistry.h"
 
-#include "ClassWalker.h"
-#include "Utils/TypeNames.h"
+#include "Utils\ReadWriteMutex.h"
 
-#include <string.h>
+namespace
+{
+    static Script::Utils::ReadWriteMutex SRWMutex;
+    static std::unordered_map<std::string, Script::Reflection::ClassWalker> ClassStorage;
+}
 
 namespace Script
 {
     namespace Reflection
     {
-        class ClassRegistry
+        /*static*/ void ClassRegistry::Store(const char* const typeName, ClassWalker&& outline)
         {
-        public:
-            template <typename T>
-            static void Register()
-            {
-                auto typeName = Utils::GetTypeName<T>();
-
-                ClassWalker typeOutline;
-                RegisterClass<T>::Register(typeOutline);
-
-                ClassRegistry::Store(typeName, std::move(typeOutline));
-            }
-
-        private:
-            static void Store(const char* const typeName, ClassWalker&& outline);
-        };
-
-        template <typename T>
-        struct RegisterClass
-        {
-            static void Register(ClassWalker&)
-            {
-                static_assert(!sizeof(T), "class is not registered properly");
-            }
-        };
+            Utils::WriteLock lock(SRWMutex);
+            ClassStorage[ typeName ] = std::move(outline);
+        }
     }
 }
