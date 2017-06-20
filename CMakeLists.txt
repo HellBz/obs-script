@@ -35,6 +35,7 @@ set(INCLUDES
     src/TemplateUtils.h
     src/ScriptModule.h
     src/ScriptMan.h
+    src/RefCounted.h
     src/Interface/IContext.h
     src/Interface/IScript.h
     src/Lua/Context.h
