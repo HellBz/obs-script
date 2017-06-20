@@ -43,6 +43,9 @@ namespace Script
                 ClassRegistry::Store(typeName, std::move(typeOutline));
             }
 
+            static const ClassWalker& Find(const char* const typeName);
+            static void List(std::vector<std::string>& result);
+
         private:
             static void Store(const char* const typeName, ClassWalker&& outline);
         };

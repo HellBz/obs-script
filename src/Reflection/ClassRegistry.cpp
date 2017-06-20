@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include "types.h"
+
 #include "ClassRegistry.h"
 
 #include "Utils\ReadWriteMutex.h"
@@ -26,12 +28,32 @@ namespace
 {
     static Script::Utils::ReadWriteMutex SRWMutex;
     static std::unordered_map<std::string, Script::Reflection::ClassWalker> ClassStorage;
+
+    static const Script::Reflection::ClassWalker skEmptyClassOutline;
 }
 
 namespace Script
 {
     namespace Reflection
     {
+
+        /*static*/ const ClassWalker& ClassRegistry::Find(const char* const typeName)
+        {
+            Utils::ReadLock lock(SRWMutex);
+            if (ClassStorage.find(typeName) != ClassStorage.end())
+                return ClassStorage[ typeName ];
+
+            assert(!"unable to find a class outline for this type");
+            return skEmptyClassOutline;
+        }
+
+        /*static*/ void ClassRegistry::List(std::vector<std::string>& result)
+        {
+            Utils::ReadLock lock(SRWMutex);
+            for (const auto& iter : ClassStorage)
+                result.push_back(iter.first);
+        }
+
         /*static*/ void ClassRegistry::Store(const char* const typeName, ClassWalker&& outline)
         {
             Utils::WriteLock lock(SRWMutex);
