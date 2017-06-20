@@ -51,11 +51,13 @@ Source::~Source()
 
 void Source::AddRef()
 {
+    RefCounted::AddRef();
     obs_source_addref(m_source);
 }
 
 void Source::ReleaseRef()
 {
+    RefCounted::ReleaseRef();
     obs_source_release(m_source);
 }
 
