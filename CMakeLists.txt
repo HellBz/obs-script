@@ -35,10 +35,14 @@ set(INCLUDES
     src/ScriptModule.h
     src/ScriptMan.h
     src/RefCounted.h
-    src/Interface/IContext.h
-    src/Interface/IScript.h
+    src/Interface/Context.h
+    src/Interface/Script.h
+    src/Interface/Function.h
+    src/Interface/Class.h
     src/Lua/Context.h
     src/Lua/Script.h
+    src/Lua/Function.h
+    src/Lua/Class.h
     src/Reflection/ClassWalker.h
     src/Reflection/Function.h
     src/Reflection/ClassRegistry.h
@@ -53,6 +57,8 @@ set(SOURCES
     src/ScriptMan.cpp
     src/Lua/Context.cpp
     src/Lua/Script.cpp
+    src/Lua/Function.cpp
+    src/Lua/Class.cpp
     src/Reflection/ClassRegistry.cpp
     src/Exposed/Text.cpp
     src/Exposed/Source.cpp
