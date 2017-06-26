@@ -31,18 +31,11 @@
 
 namespace Script
 {
-    static void RegisterClasses()
-    {
-        Reflection::ClassRegistry::Register<Source>();
-        Reflection::ClassRegistry::Register<TextSource>();
-    }
-
     bool Module::OnLoad()
     {
-        RegisterClasses();
-
         m_manager.SetContext(std::make_shared<Lua::Context>());
         m_manager.Initialize();
+        m_manager.AddScript("X:\\obs-studio\\plugins\\obs-script\\test\\test.lua");
         return true;
     }
 

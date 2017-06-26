@@ -22,8 +22,8 @@
 
 #include "ScriptMan.h"
 
-#include "Interface/IContext.h"
-#include "Interface/IScript.h"
+#include "Interface/Context.h"
+#include "Interface/Script.h"
 
 namespace Script
 {
@@ -57,5 +57,19 @@ namespace Script
         m_context = nullptr;
     }
 
-    void Manager::SetContext(const std::shared_ptr<IContext>& context) { m_context = context; }
+    void Manager::SetContext(const std::shared_ptr<Interface::Context>& context)
+    {
+        m_context = context;
+    }
+
+    void Manager::AddScript(const std::string& path)
+    {
+        if (!m_context)
+            return;
+
+        const auto newScript = m_context->NewScript(path);
+        m_scripts.push_back(newScript);
+
+        newScript->Load(m_context);
+    }
 }

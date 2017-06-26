@@ -25,8 +25,11 @@
 
 namespace Script
 {
-    class IContext;
-    class IScript;
+    namespace Interface
+    {
+        class Context;
+        class Script;
+    }
 
     class Manager
     {
@@ -36,10 +39,12 @@ namespace Script
         void Initialize();
         void Finalize();
 
-        void SetContext(const std::shared_ptr<IContext>& context);
+        void SetContext(const std::shared_ptr<Interface::Context>& context);
+
+        void AddScript(const std::string& path);
 
     private:
-        std::shared_ptr<IContext> m_context;
-        std::list<std::shared_ptr<IScript>> m_scripts;
+        std::shared_ptr<Interface::Context> m_context;
+        std::list<std::shared_ptr<Interface::Script>> m_scripts;
     };
 }
