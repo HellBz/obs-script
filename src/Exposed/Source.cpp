@@ -24,8 +24,8 @@ extern "C" {
 #include <obs.h>
 }
 
-/*static*/ Source* Source::New(const char* id, const char* name, obs_data_t* settings,
-                               obs_data_t* hotkeys)
+/*static*/ Source*
+Source::New(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys)
 {
     auto obsSource = obs_source_create(id, name, settings, hotkeys);
 
@@ -143,6 +143,11 @@ bool Source::IsMuted() const
         return true;
 
     return obs_source_muted(m_source);
+}
+
+bool Source::operator==(const Source& other) const
+{
+    return strcmp(obs_source_get_id(m_source), obs_source_get_id(other.m_source)) == 0;
 }
 
 void Source::DeleteSelf()

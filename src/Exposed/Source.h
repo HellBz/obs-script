@@ -61,6 +61,8 @@ public:
     void Unmute();
     bool IsMuted() const;
 
+    bool operator==(const Source& other) const;
+
 protected:
     void DeleteSelf() override;
 

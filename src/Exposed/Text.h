@@ -36,6 +36,8 @@ public:
     void SetText(const std::string& text);
     const std::string& GetText() const;
 
+    bool operator==(const TextSource& other) const;
+
 private:
     std::string m_text;
 };

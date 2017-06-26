@@ -52,3 +52,8 @@ const std::string& TextSource::GetText() const
 {
     return m_text;
 }
+
+bool TextSource::operator==(const TextSource& other) const
+{
+    return m_text == other.m_text;
+}
