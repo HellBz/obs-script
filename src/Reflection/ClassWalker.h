@@ -60,8 +60,42 @@ namespace Script
                     entry = std::make_shared<StaticFunction<TReturn, TArgs...>>(func);
             }
 
+            bool HasFunction(const char* const name) const
+            {
+                return m_functions.find(name) != m_functions.end();
+            }
+
+            std::shared_ptr<IFunction> GetFunction(const char* const name) const
+            {
+                const auto iter = m_functions.find(name);
+                if (iter != m_functions.end())
+                    return (*iter).second;
+
+                return nullptr;
+            }
+
         private:
             std::unordered_map<std::string, std::shared_ptr<IFunction>> m_functions;
+
+            friend auto begin(const ClassWalker& src) -> decltype(src.m_functions.begin())
+            {
+                return src.m_functions.begin();
+            }
+
+            friend auto begin(ClassWalker& src) -> decltype(src.m_functions.begin())
+            {
+                return src.m_functions.begin();
+            }
+
+            friend auto end(const ClassWalker& src) -> decltype(src.m_functions.end())
+            {
+                return src.m_functions.end();
+            }
+
+            friend auto end(ClassWalker& src) -> decltype(src.m_functions.end())
+            {
+                return src.m_functions.end();
+            }
         };
     }
 }
