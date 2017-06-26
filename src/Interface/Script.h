@@ -25,14 +25,17 @@
 
 namespace Script
 {
-    class IContext;
-
-    class IScript
+    namespace Interface
     {
-    public:
-        virtual void SetFile(const std::string& file)                     = 0;
-        virtual bool Load(const std::shared_ptr<IContext>& context) const = 0;
+        class Context;
 
-    private:
-    };
+        class Script
+        {
+        public:
+            virtual void SetFile(const std::string& file)                    = 0;
+            virtual bool Load(const std::shared_ptr<Context>& context) const = 0;
+
+        private:
+        };
+    }
 }

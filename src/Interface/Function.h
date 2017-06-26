@@ -22,11 +22,13 @@
 
 namespace Script
 {
-    class IContext
+    namespace Interface
     {
-    public:
-        virtual bool Open()  = 0;
-        virtual void Init()  = 0;
-        virtual void Close() = 0;
-    };
+        class Function
+        {
+        public:
+            virtual int32 Invoke(void* state, void* data) const = 0;
+            virtual const char* ToString() const                = 0;
+        };
+    }
 }
