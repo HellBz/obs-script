@@ -18,16 +18,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include <lua.hpp>
+#include <util/base.h>
+
 #include "types.h"
 
+#include "Lua/Class.h"
 #include "Lua/Context.h"
+#include "Lua/Script.h"
 
-#include "lua.hpp"
+#include "Exposed/Source.h"
+#include "Exposed/Text.h"
 
 namespace Script
 {
     namespace Lua
     {
+        static int32 Print(lua_State* L)
+        {
+            const auto argCount = lua_gettop(L);
+
+            for (auto i = 0; i < argCount; ++i)
+            {
+                if (lua_isstring(L, i))
+                {
+                    const auto str = lua_tostring(L, i);
+                    blog(LOG_DEBUG, "[Script]: %s", str);
+                }
+                else
+                {
+                }
+            }
+
+            return 0;
+        }
+
+        static const luaL_Reg skPrintOverride[] = {{"print", Print}, {nullptr, nullptr}};
+
+        static void OverridePrint(lua_State* L)
+        {
+            lua_getglobal(L, "_G");
+            luaL_setfuncs(L, skPrintOverride, 0);
+            lua_pop(L, 1);
+        }
 
         bool Context::Open()
         {
@@ -36,10 +69,25 @@ namespace Script
             return true;
         }
 
-        void Context::Init() { luaL_openlibs(m_state); }
+        void Context::Init()
+        {
+            luaL_openlibs(m_state);
+            OverridePrint(m_state);
+
+            Class<Source>::Register(m_state);
+            Class<TextSource>::Register(m_state);
+        }
 
         void Context::Close() { lua_close(m_state); }
 
         lua_State* Context::GetState() const { return m_state; }
+
+        std::shared_ptr<Interface::Script> Context::NewScript(const std::string& file)
+        {
+            auto result = std::make_shared<Lua::Script>();
+            result->SetFile(file);
+
+            return result;
+        }
     }
 }

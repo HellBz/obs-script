@@ -20,16 +20,20 @@
 
 #pragma once
 
-#include "Interface/IContext.h"
+#include "Interface/Context.h"
 
 struct lua_State;
 
 namespace Script
 {
+    namespace Interface
+    {
+        class Script;
+    }
+
     namespace Lua
     {
-
-        class Context : public IContext
+        class Context : public Interface::Context
         {
         public:
             bool Open() override;
@@ -37,6 +41,8 @@ namespace Script
             void Close() override;
 
             lua_State* GetState() const;
+
+            std::shared_ptr<Interface::Script> NewScript(const std::string& file) override;
 
         private:
             lua_State* m_state;

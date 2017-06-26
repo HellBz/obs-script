@@ -32,7 +32,7 @@ namespace Script
     {
         void Script::SetFile(const std::string& file) { m_filePath = file; }
 
-        bool Script::Load(const std::shared_ptr<IContext>& context) const
+        bool Script::Load(const std::shared_ptr<Interface::Context>& context) const
         {
             if (!context)
                 return false;
@@ -43,6 +43,18 @@ namespace Script
             const std::shared_ptr<Context>& luaContext = std::static_pointer_cast<Context>(context);
 
             auto result = luaL_loadfile(luaContext->GetState(), m_filePath.c_str());
+            if (result != LUA_OK)
+            {
+                luaL_error(
+                    luaContext->GetState(), "Error: failed to load file %s", m_filePath.c_str());
+                return false;
+            }
+
+            result = lua_pcall(luaContext->GetState(), 0, LUA_MULTRET, 0);
+            if (result != LUA_OK)
+                luaL_error(
+                    luaContext->GetState(), "Error: failed to execute %s", m_filePath.c_str());
+
             return result == LUA_OK;
         }
     }

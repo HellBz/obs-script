@@ -22,17 +22,17 @@
 
 #include <string>
 
-#include "Interface/IScript.h"
+#include "Interface/Script.h"
 
 namespace Script
 {
     namespace Lua
     {
-        class Script : public IScript
+        class Script : public Interface::Script
         {
         public:
             void SetFile(const std::string& file) override;
-            bool Load(const std::shared_ptr<IContext>& context) const override;
+            bool Load(const std::shared_ptr<Interface::Context>& context) const override;
 
         private:
             std::string m_filePath;
