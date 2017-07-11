@@ -87,7 +87,7 @@ namespace Script
                 lua_pushcfunction(L, &Class<T>::Set);
                 lua_settable(L, table);
 
-                const auto& outline = Reflection::ClassRegistry::Find(typeName);
+                const auto& outline = Reflection::ClassRegistry::Find<T>();
                 for (const auto& iter : outline)
                 {
                     lua_pushstring(L, iter.first.c_str());
@@ -158,7 +158,7 @@ namespace Script
 
                     lua_pushvalue(L, 3);
 
-                    const auto& outline = Reflection::ClassRegistry::Find(className);
+                    const auto& outline = Reflection::ClassRegistry::Find<T>();
                     if (outline.HasFunction(functionName))
                     {
                         lua_pushstring(L, functionName);
@@ -199,7 +199,7 @@ namespace Script
                         return 0;
                     }
 
-                    const auto& outline = Reflection::ClassRegistry::Find(className);
+                    const auto& outline = Reflection::ClassRegistry::Find<T>();
                     if (outline.HasFunction(functionName))
                     {
                         luaL_error(L,
@@ -229,7 +229,7 @@ namespace Script
                 auto functionName = lua_tostring(L, lua_upvalueindex(1));
                 auto ptr          = static_cast<T*>(lua_touserdata(L, lua_upvalueindex(2)));
 
-                const auto& outline = Reflection::ClassRegistry::Find(className);
+                const auto& outline = Reflection::ClassRegistry::Find<T>();
 
                 if (outline.HasFunction(functionName))
                 {

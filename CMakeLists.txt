@@ -4,6 +4,14 @@ project(obs-script C CXX)
 
 add_subdirectory(extern)
 
+if (HAS_LUA)
+    add_definitions(-DHAS_LUA)
+endif()
+
+if (HAS_PYTHON)
+    add_definitions(-DHAS_PYTHON)
+endif()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 macro( source_group_tree )

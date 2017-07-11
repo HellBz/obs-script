@@ -43,6 +43,12 @@ namespace Script
                 ClassRegistry::Store(typeName, std::move(typeOutline));
             }
 
+            template <typename T>
+            static const ClassWalker& Find()
+            {
+                return Find(Utils::GetTypeName<T>());
+            }
+
             static const ClassWalker& Find(const char* const typeName);
             static void List(std::vector<std::string>& result);
 

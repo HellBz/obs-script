@@ -20,14 +20,35 @@
 
 #pragma once
 
+#if HAS_LUA
+#include "Lua\Function.h"
+#else
+#include "Interface\Function.h"
+#endif
+
 namespace Script
 {
     namespace Reflection
     {
-        class IFunction
+#if HAS_LUA
+        using IFunction = Script::Lua::Function;
+#else
+        class IFunction : public Interface::Function
         {
         public:
+            int32 Invoke(void*, void*) const override
+            {
+                UNIMPLEMENTED();
+                return 0;
+            }
+
+            const char* ToString() const override
+            {
+                UNIMPLEMENTED();
+                return nullptr;
+            }
         };
+#endif
 
         template <typename TReturn, typename TObject, typename... TArgs>
         class MemberFunction : public IFunction
@@ -40,7 +61,7 @@ namespace Script
             {
             }
 
-            TReturn Invoke(TObject* object, TArgs&&... args) const
+            TReturn operator()(TObject* object, TArgs&&... args) const
             {
                 return (object->m_funcPtr)(std::forward<TArgs>(args)...);
             }
@@ -60,7 +81,7 @@ namespace Script
             {
             }
 
-            TReturn Invoke(const TObject* object, TArgs&&... args) const
+            TReturn operator()(const TObject* object, TArgs&&... args) const
             {
                 return (object->m_funcPtr)(std::forward<TArgs>(args)...);
             }
@@ -80,7 +101,7 @@ namespace Script
             {
             }
 
-            TReturn Invoke(TArgs&&... args) const
+            TReturn operator()(TArgs&&... args) const
             {
                 return (*m_funcPtr)(std::forward<TArgs>(args)...);
             }
