@@ -26,17 +26,14 @@ namespace Script
 {
     namespace Detail
     {
-        constexpr size_t GetPrefixSize()
-        {
-            return sizeof("Script::Detail::GetTypeNameHelper<") - 1u;
-        }
+        constexpr size_t GetPrefixSize() { return sizeof("Script::Detail::TypeNameHelper<") - 1u; }
 
-        constexpr size_t GetPostfixSize() { return sizeof(">::GetTypeName") - 1u; }
+        constexpr size_t GetPostfixSize() { return sizeof(">::Get") - 1u; }
 
         template <typename T>
-        struct GetTypeNameHelper
+        struct TypeNameHelper
         {
-            static const char* GetTypeName()
+            static const char* Get()
             {
                 static constexpr size_t size =
                     sizeof(__FUNCTION__) - GetPrefixSize() - GetPostfixSize();
@@ -49,12 +46,21 @@ namespace Script
 
     namespace Utils
     {
+        /**
+         * Strips 'struct' or 'class' from type names by moving the pointer
+         *
+         * @param toClean the original string
+         * @return a string without 'struct' or 'class'
+         */
         const char* CleanTypeName(const char* const toClean);
 
+        /**
+         * Get the name of the supplied template argument
+         */
         template <typename T>
         const char* GetTypeName()
         {
-            return CleanTypeName(Detail::GetTypeNameHelper<T>::GetTypeName());
+            return CleanTypeName(Detail::TypeNameHelper<T>::Get());
         }
     }
 }

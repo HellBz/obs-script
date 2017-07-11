@@ -24,16 +24,6 @@ extern "C" {
 #include <obs.h>
 }
 
-/*static*/ Source*
-Source::New(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys)
-{
-    auto obsSource = obs_source_create(id, name, settings, hotkeys);
-
-    auto result = new Source(obsSource);
-    // TODO: add ref?
-    return result;
-}
-
 Source::Source()
     : m_source(nullptr)
 {
@@ -42,23 +32,18 @@ Source::Source()
 Source::Source(obs_source_t* source)
     : m_source(source)
 {
+    obs_source_addref(m_source);
+}
+
+Source::Source(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys)
+    : Source(obs_source_create(id, name, settings, hotkeys))
+{
 }
 
 Source::~Source()
 {
-    m_source = nullptr;
-}
-
-void Source::AddRef()
-{
-    RefCounted::AddRef();
-    obs_source_addref(m_source);
-}
-
-void Source::ReleaseRef()
-{
-    RefCounted::ReleaseRef();
     obs_source_release(m_source);
+    m_source = nullptr;
 }
 
 const char* Source::GetId() const
@@ -148,9 +133,4 @@ bool Source::IsMuted() const
 bool Source::operator==(const Source& other) const
 {
     return strcmp(obs_source_get_id(m_source), obs_source_get_id(other.m_source)) == 0;
-}
-
-void Source::DeleteSelf()
-{
-    delete this;
 }

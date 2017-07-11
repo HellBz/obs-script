@@ -31,19 +31,13 @@ using namespace Script::Reflection;
 typedef struct obs_source obs_source_t;
 typedef struct obs_data obs_data_t;
 
-class Source : public Script::RefCounted
+class Source
 {
 public:
-    static Source* New(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys);
-
     Source();
+    explicit Source(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys);
     explicit Source(obs_source_t* source);
     ~Source();
-
-    // Script::RefCounted
-    void AddRef() override;
-    void ReleaseRef() override;
-    // ~Script::Refcounted
 
     const char* GetId() const;
     const char* GetName() const;
@@ -64,8 +58,6 @@ public:
     bool operator==(const Source& other) const;
 
 protected:
-    void DeleteSelf() override;
-
     obs_source_t* m_source;
 };
 

@@ -1,5 +1,6 @@
-local test = 0.5
-
 print("hello world")
 
-print(test)
+local test = Source()
+test:Mute()
+
+print(test.Mute)

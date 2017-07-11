@@ -38,68 +38,99 @@ namespace Script
         class Class : public Interface::Class
         {
         public:
-            static void Register(lua_State* L, const char* Namespace = nullptr)
+            /**
+             * Retrieves this class from the Lua stack
+             *
+             * @param L lua state
+             * @param arg position to check
+             */
+            static T* Check(lua_State* L, int32 arg)
+            {
+                auto ptr = static_cast<T**>(luaL_checkudata(L, arg, Utils::GetTypeName<T>()));
+                if (!ptr)
+                    return nullptr;
+
+                return *ptr;
+            }
+
+            /**
+             * Retrieves this class from the Lua stack
+             *
+             * @param L lua state
+             * @param arg position to check
+             */
+            static T* LightCheck(lua_State* L, int32 arg)
+            {
+                auto ptr = static_cast<T**>(luaL_testudata(L, arg, Utils::GetTypeName<T>()));
+                if (!ptr)
+                    return nullptr;
+
+                return *ptr;
+            }
+
+            static void Register(lua_State* L, const char* nameSpace = nullptr)
             {
                 Reflection::ClassRegistry::Register<T>();
 
-                const auto typeName = Utils::GetTypeName<T>();
-
-                if (Namespace && strlen(Namespace))
+                if (nameSpace && strlen(nameSpace))
                 {
-                    lua_getglobal(L, Namespace);
+                    lua_getglobal(L, nameSpace);
                     if (lua_isnil(L, -1))
                     {
                         lua_newtable(L);
                         lua_pushvalue(L, -1);
-                        lua_setglobal(L, Namespace);
+                        lua_setglobal(L, nameSpace);
                     }
 
                     lua_pushcfunction(L, &Class<T>::New);
-                    lua_setfield(L, -2, typeName);
+                    lua_setfield(L, -2, Utils::GetTypeName<T>());
                     lua_pop(L, 1);
                 }
                 else
                 {
                     lua_pushcfunction(L, &Class<T>::New);
-                    lua_setglobal(L, typeName);
+                    lua_setglobal(L, Utils::GetTypeName<T>());
                 }
 
+                const auto typeName = Utils::GetTypeName<T>();
                 luaL_newmetatable(L, typeName);
-                const auto table = lua_gettop(L);
+                int metatable = lua_gettop(L);
 
                 lua_pushstring(L, "__gc");
                 lua_pushcfunction(L, &Class<T>::Collect);
-                lua_settable(L, table);
+                lua_settable(L, metatable);
 
                 lua_pushstring(L, "__tostring");
                 lua_pushcfunction(L, &Class<T>::ToString);
-                lua_settable(L, table);
+                lua_settable(L, metatable);
 
                 lua_pushstring(L, "__eq");
                 lua_pushcfunction(L, &Class<T>::Equal);
-                lua_settable(L, table);
+                lua_settable(L, metatable);
 
                 lua_pushstring(L, "__index");
                 lua_pushcfunction(L, &Class<T>::Get);
-                lua_settable(L, table);
+                lua_settable(L, metatable);
 
                 lua_pushstring(L, "__newindex");
                 lua_pushcfunction(L, &Class<T>::Set);
-                lua_settable(L, table);
+                lua_settable(L, metatable);
 
                 const auto& outline = Reflection::ClassRegistry::Find<T>();
                 for (const auto& iter : outline)
                 {
                     lua_pushstring(L, iter.first.c_str());
                     lua_pushstring(L, iter.first.c_str());
-                    lua_settable(L, table);
+                    lua_settable(L, metatable);
                 }
             }
 
             static int32 New(lua_State* L)
             {
-                auto userData = lua_newuserdata(L, sizeof(T));
-                new (userData) T();
+                auto ptr      = new T();
+                auto userData = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
+
+                *userData = ptr;
 
                 luaL_getmetatable(L, Utils::GetTypeName<T>());
                 lua_setmetatable(L, -2);
@@ -109,7 +140,7 @@ namespace Script
 
             static int32 Collect(lua_State* L)
             {
-                if (auto ptr = static_cast<const T*>(lua_touserdata(L, -1)))
+                if (auto ptr = Class<T>::Check(L, -1))
                 {
                     delete ptr;
                 }
@@ -119,7 +150,7 @@ namespace Script
 
             static int32 ToString(lua_State* L)
             {
-                if (auto ptr = static_cast<const T*>(lua_touserdata(L, -1)))
+                if (auto ptr = Class<T>::LightCheck(L, -1))
                     lua_pushfstring(L, "%s (%p)", Utils::GetTypeName<T>(), ptr);
                 else
                     lua_pushfstring(L, "%s (nil)", Utils::GetTypeName<T>());
@@ -129,8 +160,8 @@ namespace Script
 
             static int32 Equal(lua_State* L)
             {
-                auto lhs = static_cast<const T*>(lua_touserdata(L, -1));
-                auto rhs = static_cast<const T*>(lua_touserdata(L, 1));
+                auto lhs = Class<T>::LightCheck(L, -1);
+                auto rhs = Class<T>::LightCheck(L, 1);
 
                 lua_pushboolean(L, *lhs == *rhs);
                 return 1;
@@ -138,8 +169,6 @@ namespace Script
 
             static int32 Get(lua_State* L)
             {
-                const auto className = Utils::GetTypeName<T>();
-
                 lua_getmetatable(L, 1);
                 lua_pushvalue(L, 2);
                 lua_rawget(L, -2);
@@ -148,13 +177,7 @@ namespace Script
                 {
                     const auto functionName = lua_tostring(L, -1);
 
-                    auto ptr = static_cast<T*>(lua_touserdata(L, 1));
-
-                    if (!ptr)
-                    {
-                        luaL_error(L, "Error: failed to retrieve underlying pointer");
-                        return 0;
-                    }
+                    auto ptr = static_cast<T**>(lua_touserdata(L, 1));
 
                     lua_pushvalue(L, 3);
 
@@ -162,18 +185,16 @@ namespace Script
                     if (outline.HasFunction(functionName))
                     {
                         lua_pushstring(L, functionName);
-                        lua_pushlightuserdata(L, static_cast<void*>(ptr));
+                        lua_pushlightuserdata(L, ptr);
                         lua_pushcclosure(L, &Class<T>::Invoke, 2);
                         return 1;
                     }
-                    else
-                    {
-                        lua_pop(L, 2);
-                        lua_remove(L, 1);
-                        lua_remove(L, 1);
 
-                        return 0;
-                    }
+                    lua_pop(L, 2);
+                    lua_remove(L, 1);
+                    lua_remove(L, 1);
+
+                    return 0;
                 }
 
                 return 1;
@@ -191,7 +212,7 @@ namespace Script
                 {
                     const auto functionName = lua_tostring(L, -1);
 
-                    auto ptr = static_cast<const T*>(lua_touserdata(L, 1));
+                    auto ptr = static_cast<T**>(lua_touserdata(L, 1));
 
                     if (!ptr)
                     {
@@ -209,14 +230,12 @@ namespace Script
 
                         return 0;
                     }
-                    else
-                    {
-                        lua_pop(L, 2);
-                        lua_remove(L, 1);
-                        lua_remove(L, 1);
 
-                        return 0;
-                    }
+                    lua_pop(L, 2);
+                    lua_remove(L, 1);
+                    lua_remove(L, 1);
+
+                    return 0;
                 }
 
                 return 0;
@@ -224,24 +243,23 @@ namespace Script
 
             static int32 Invoke(lua_State* L)
             {
-                const auto className = Utils::GetTypeName<T>();
-
                 auto functionName = lua_tostring(L, lua_upvalueindex(1));
-                auto ptr          = static_cast<T*>(lua_touserdata(L, lua_upvalueindex(2)));
+                auto ptr          = static_cast<T**>(lua_touserdata(L, lua_upvalueindex(2)));
 
                 const auto& outline = Reflection::ClassRegistry::Find<T>();
-
                 if (outline.HasFunction(functionName))
                 {
                     std::shared_ptr<IFunction> method = outline.GetFunction(functionName);
                     if (method)
                     {
-                        // return method->Invoke();
+                        return method->Invoke(L, *ptr);
                     }
                 }
 
-                luaL_error(
-                    L, "Error: unable to find method %s of type %s", functionName, className);
+                luaL_error(L,
+                           "Error: unable to find method %s of type %s",
+                           functionName,
+                           Utils::GetTypeName<T>());
                 return 0;
             }
         };
