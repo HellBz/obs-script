@@ -35,7 +35,7 @@ namespace Script
             template <typename T>
             static void Register()
             {
-                auto typeName = Utils::GetTypeName<T>();
+                const auto typeName = Utils::GetTypeName<T>();
 
                 ClassWalker typeOutline;
                 RegisterClass<T>::Register(typeOutline);
