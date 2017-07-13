@@ -57,7 +57,7 @@ namespace Script
             template <size_t... Index>
             TReturn InternalCall(lua_State* L, void* data, std::index_sequence<Index...>) const
             {
-                (void)(L);
+                UNUSED(L);
 
                 auto self = reinterpret_cast<const TChild*>(this);
                 return self->operator()(
@@ -89,7 +89,7 @@ namespace Script
             template <size_t... Index>
             void InternalCall(lua_State* L, void* data, std::index_sequence<Index...>) const
             {
-                (void)(L);
+                UNUSED(L);
 
                 auto self = reinterpret_cast<const TChild*>(this);
                 self->operator()(
@@ -109,7 +109,7 @@ namespace Script
         public:
             int32 Invoke(void* state, void* data) const override
             {
-                (void)(data);
+                UNUSED(data);
 
                 auto L      = reinterpret_cast<lua_State*>(state);
                 auto result = InternalCall(L, std::make_index_sequence<sizeof...(TArgs)>{});
@@ -124,7 +124,7 @@ namespace Script
             template <size_t... Index>
             TResult InternalCall(lua_State* L, std::index_sequence<Index...>) const
             {
-                (void)(L);
+                UNUSED(L);
 
                 auto self = reinterpret_cast<const TChild*>(this);
                 return self->operator()(
@@ -143,7 +143,7 @@ namespace Script
         public:
             int32 Invoke(void* state, void* data) const override
             {
-                (void)(data);
+                UNUSED(data);
 
                 auto L = reinterpret_cast<lua_State*>(state);
                 InternalCall(L, std::make_index_sequence<sizeof...(TArgs)>{});
@@ -156,7 +156,7 @@ namespace Script
             template <size_t... Index>
             void InternalCall(lua_State* L, std::index_sequence<Index...>) const
             {
-                (void)(L);
+                UNUSED(L);
 
                 auto self = reinterpret_cast<const TChild*>(this);
                 self->operator()(

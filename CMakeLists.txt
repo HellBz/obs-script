@@ -58,7 +58,8 @@ set(INCLUDES
     src/Exposed/Text.h
     src/Exposed/Source.h
     src/Utils/TypeNames.h
-    src/Utils/ReadWriteMutex.h)
+    src/Utils/ReadWriteMutex.h
+    src/Utils/Misc.h)
 
 set(SOURCES
     src/obs-script.cpp
@@ -72,7 +73,8 @@ set(SOURCES
     src/Exposed/Text.cpp
     src/Exposed/Source.cpp
     src/Utils/TypeNames.cpp
-    src/Utils/ReadWriteMutex.cpp)
+    src/Utils/ReadWriteMutex.cpp
+    src/Utils/Misc.cpp)
 
 source_group_tree(Source src)
 

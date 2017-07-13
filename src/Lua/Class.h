@@ -252,11 +252,9 @@ namespace Script
                 const auto& outline = Reflection::ClassRegistry::Find<T>();
                 if (outline.HasFunction(functionName))
                 {
-                    std::shared_ptr<Interface::Function> method = outline.GetFunction(functionName);
-                    if (method)
-                    {
+
+                    if (const auto& method = outline.GetFunction(functionName))
                         return method->Invoke(L, *ptr);
-                    }
                 }
 
                 luaL_error(L,

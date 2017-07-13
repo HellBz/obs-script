@@ -25,6 +25,7 @@
 #include <unordered_map>
 
 #include "Reflection/Function.h"
+#include "Utils/Misc.h"
 
 namespace Script
 {
@@ -65,13 +66,13 @@ namespace Script
                 return m_functions.find(name) != m_functions.end();
             }
 
-            std::shared_ptr<Interface::Function> GetFunction(const char* const name) const
+            const std::shared_ptr<Interface::Function>& GetFunction(const char* const name) const
             {
                 const auto iter = m_functions.find(name);
                 if (iter != m_functions.end())
                     return (*iter).second;
 
-                return nullptr;
+                return Utils::Misc::InvalidFunction();
             }
 
         private:
