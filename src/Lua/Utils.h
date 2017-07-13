@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <string>
+#include <xtr1common>
+
 namespace Script
 {
     namespace Lua
@@ -412,9 +415,14 @@ namespace Script
             template <typename T>
             struct Writer<T*>
             {
-                static int32 Write(lua_State* L, const T* const value)
+                static int32 Write(lua_State* L, T* value)
                 {
-                    lua_pushlightuserdata(L, value);
+                    auto dest = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
+                    *dest     = value;
+
+                    luaL_getmetatable(L, ::Script::Utils::GetTypeName<T>());
+                    lua_setmetatable(L, -2);
+
                     return 1;
                 }
             };
@@ -424,7 +432,12 @@ namespace Script
             {
                 static T* Read(lua_State* L, const int32 index)
                 {
-                    return luaL_checkudata(L, index, Utils::GetTypeName<T>());
+                    T** result = static_cast<T**>(
+                        luaL_checkudata(L, index, ::Script::Utils::GetTypeName<T>()));
+                    if (result)
+                        return *result;
+
+                    return nullptr;
                 }
             };
         }

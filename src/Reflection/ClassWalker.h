@@ -35,7 +35,7 @@ namespace Script
         {
         public:
             template <typename TReturn, typename TObject, typename... TArgs>
-            void AddFunction(const std::string& name, TReturn (TObject::*func)(TArgs...))
+            void AddFunction(std::string&& name, TReturn (TObject::*func)(TArgs...))
             {
                 auto& entry = m_functions[ name ];
                 if (!entry)
@@ -43,7 +43,7 @@ namespace Script
             }
 
             template <typename TReturn, typename TObject, typename... TArgs>
-            void AddFunction(const std::string& name, TReturn (TObject::*func)(TArgs...) const)
+            void AddFunction(std::string&& name, TReturn (TObject::*func)(TArgs...) const)
             {
                 auto& entry = m_functions[ name ];
 
@@ -52,7 +52,7 @@ namespace Script
             }
 
             template <typename TReturn, typename... TArgs>
-            void AddFunction(const std::string& name, TReturn (*func)(TArgs...))
+            void AddFunction(std::string&& name, TReturn (*func)(TArgs...))
             {
                 auto& entry = m_functions[ name ];
 
@@ -65,7 +65,7 @@ namespace Script
                 return m_functions.find(name) != m_functions.end();
             }
 
-            std::shared_ptr<IFunction> GetFunction(const char* const name) const
+            std::shared_ptr<Interface::Function> GetFunction(const char* const name) const
             {
                 const auto iter = m_functions.find(name);
                 if (iter != m_functions.end())
@@ -75,7 +75,7 @@ namespace Script
             }
 
         private:
-            std::unordered_map<std::string, std::shared_ptr<IFunction>> m_functions;
+            std::unordered_map<std::string, std::shared_ptr<Interface::Function>> m_functions;
 
             friend auto begin(const ClassWalker& src) -> decltype(src.m_functions.begin())
             {

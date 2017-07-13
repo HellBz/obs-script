@@ -31,8 +31,10 @@ namespace Script
     namespace Reflection
     {
 #if HAS_LUA
-        using IFunction = Script::Lua::Function;
+        template <typename... TArgs>
+        using IFunction = Script::Lua::Function<TArgs...>;
 #else
+        template <typename... TArgs>
         class IFunction : public Interface::Function
         {
         public:
@@ -51,7 +53,10 @@ namespace Script
 #endif
 
         template <typename TReturn, typename TObject, typename... TArgs>
-        class MemberFunction : public IFunction
+        class MemberFunction : public IFunction<MemberFunction<TReturn, TObject, TArgs...>,
+                                                TReturn,
+                                                TObject,
+                                                TArgs...>
         {
             using TFunction = TReturn (TObject::*)(TArgs...);
 
@@ -63,7 +68,7 @@ namespace Script
 
             TReturn operator()(TObject* object, TArgs&&... args) const
             {
-                return (object->m_funcPtr)(std::forward<TArgs>(args)...);
+                return (object->*m_funcPtr)(std::forward<TArgs>(args)...);
             }
 
         private:
@@ -71,7 +76,10 @@ namespace Script
         };
 
         template <typename TReturn, typename TObject, typename... TArgs>
-        class CMemberFunction : public IFunction
+        class CMemberFunction : public IFunction<CMemberFunction<TReturn, TObject, TArgs...>,
+                                                 TReturn,
+                                                 TObject,
+                                                 TArgs...>
         {
             using TFunction = TReturn (TObject::*)(TArgs...) const;
 
@@ -83,7 +91,7 @@ namespace Script
 
             TReturn operator()(const TObject* object, TArgs&&... args) const
             {
-                return (object->m_funcPtr)(std::forward<TArgs>(args)...);
+                return (object->*m_funcPtr)(std::forward<TArgs>(args)...);
             }
 
         private:
@@ -91,7 +99,8 @@ namespace Script
         };
 
         template <typename TReturn, typename... TArgs>
-        class StaticFunction : public IFunction
+        class StaticFunction
+            : public IFunction<StaticFunction<TReturn, TArgs...>, TReturn, null, TArgs...>
         {
             using TFunction = TReturn (*)(TArgs...);
 

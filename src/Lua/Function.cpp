@@ -22,19 +22,9 @@
 
 #include "Lua/Function.h"
 
-#include <lua.hpp>
-
 namespace Script
 {
     namespace Lua
     {
-        int32 Function::Invoke(void* state, void* data) const
-        {
-            lua_State* L = reinterpret_cast<lua_State*>(state);
-
-            return 0;
-        }
-
-        const char* Function::ToString() const { return m_name.c_str(); }
     }
 }
