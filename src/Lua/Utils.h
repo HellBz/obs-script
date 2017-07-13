@@ -23,16 +23,66 @@
 #include <string>
 #include <xtr1common>
 
-namespace Script
+namespace Details
 {
-    namespace Lua
+    template <bool fits>
+    struct Helper64
     {
-        namespace Utils
+        static void PutUnsigned(lua_State* L, const Script::uint64 value)
         {
-            template <typename T>
-            struct Enabled : std::false_type
-            {
-            };
+            lua_pushinteger(L, value);
+        }
+
+        static void PutSigned(lua_State* L, const Script::int64 value)
+        {
+            lua_pushinteger(L, value);
+        }
+
+        static Script::uint64 GetUnsigned(lua_State* L, const Script::int32 index)
+        {
+            auto result = lua_tointeger(L, index);
+            return static_cast<Script::uint64>(result);
+        }
+
+        static Script::int64 GetSigned(lua_State* L, const Script::int32 index)
+        {
+            auto result = lua_tointeger(L, index);
+            return static_cast<Script::int64>(result);
+        }
+    };
+
+    template <>
+    struct Helper64<false>
+    {
+        static void PutUnsigned(lua_State* L, const Script::uint64 value)
+        {
+            const lua_Number numValue = static_cast<lua_Number>(value);
+            lua_pushnumber(L, numValue);
+        }
+
+        static void PutSigned(lua_State* L, const Script::int64 value)
+        {
+            const lua_Number numValue = static_cast<lua_Number>(value);
+            lua_pushnumber(L, numValue);
+        }
+
+        static Script::uint64 GetUnsigned(lua_State* L, const Script::int32 index)
+        {
+            auto result = lua_tonumber(L, index);
+            return static_cast<Script::uint64>(result);
+        }
+
+        static Script::int64 GetSigned(lua_State* L, const Script::int32 index)
+        {
+            auto result = lua_tonumber(L, index);
+            return static_cast<Script::int64>(result);
+        }
+    };
+
+    template <typename T>
+    struct Enabled : std::false_type
+    {
+    };
 
 #define LUA_ENABLED(T)                 \
     template <>                        \
@@ -40,88 +90,41 @@ namespace Script
     {                                  \
     }
 
-            LUA_ENABLED(uint8);
-            LUA_ENABLED(int8);
-            LUA_ENABLED(uint16);
-            LUA_ENABLED(int16);
-            LUA_ENABLED(uint32);
-            LUA_ENABLED(int32);
-            LUA_ENABLED(uint64);
-            LUA_ENABLED(int64);
-            LUA_ENABLED(bool);
-            LUA_ENABLED(float);
-            LUA_ENABLED(double);
-            LUA_ENABLED(std::string);
-            LUA_ENABLED(const char*);
+    LUA_ENABLED(Script::uint8);
+    LUA_ENABLED(Script::int8);
+    LUA_ENABLED(Script::uint16);
+    LUA_ENABLED(Script::int16);
+    LUA_ENABLED(Script::uint32);
+    LUA_ENABLED(Script::int32);
+    LUA_ENABLED(Script::uint64);
+    LUA_ENABLED(Script::int64);
+    LUA_ENABLED(bool);
+    LUA_ENABLED(float);
+    LUA_ENABLED(double);
+    LUA_ENABLED(std::string);
+    LUA_ENABLED(const char*);
 
-            template <typename T>
-            struct Enabled<T*> : std::true_type
-            {
-            };
+    template <typename T>
+    struct Enabled<T*> : std::true_type
+    {
+    };
 
-            template <size_t size>
-            struct Enabled<const char[ size ]> : std::true_type
-            {
-            };
+    template <size_t size>
+    struct Enabled<const char[ size ]> : std::true_type
+    {
+    };
 
 #undef LUA_ENABLED
+}
 
-            namespace Details
-            {
-                template <bool fits>
-                struct Helper64
-                {
-                    static void PutUnsigned(lua_State* L, const uint64 value)
-                    {
-                        lua_pushinteger(L, value);
-                    }
-
-                    static void PutSigned(lua_State* L, const int64 value)
-                    {
-                        lua_pushinteger(L, value);
-                    }
-
-                    static uint64 GetUnsigned(lua_State* L, const int32 index)
-                    {
-                        auto result = lua_tointeger(L, index);
-                        return static_cast<uint64>(result);
-                    }
-
-                    static int64 GetSigned(lua_State* L, const int32 index)
-                    {
-                        auto result = lua_tointeger(L, index);
-                        return static_cast<int64>(result);
-                    }
-                };
-
-                template <>
-                struct Helper64<false>
-                {
-                    static void PutUnsigned(lua_State* L, const uint64 value)
-                    {
-                        const lua_Number numValue = static_cast<lua_Number>(value);
-                        lua_pushnumber(L, numValue);
-                    }
-
-                    static void PutSigned(lua_State* L, const int64 value)
-                    {
-                        const lua_Number numValue = static_cast<lua_Number>(value);
-                        lua_pushnumber(L, numValue);
-                    }
-
-                    static uint64 GetUnsigned(lua_State* L, const int32 index)
-                    {
-                        auto result = lua_tonumber(L, index);
-                        return static_cast<uint64>(result);
-                    }
-
-                    static int64 GetSigned(lua_State* L, const int32 index)
-                    {
-                        auto result = lua_tonumber(L, index);
-                        return static_cast<int64>(result);
-                    }
-                };
-            }
+namespace Script
+{
+    namespace Lua
+    {
+        namespace Utils
+        {
+            template <typename T>
+            constexpr bool IsSupportedType = ::Details::Enabled<T>::value;
 
             template <typename T>
             struct Writer
@@ -208,7 +211,8 @@ namespace Script
             {
                 static int32 Write(lua_State* L, const uint64 value)
                 {
-                    Details::Helper64<sizeof(lua_Integer) >= sizeof(uint64)>::PutUnsigned(L, value);
+                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                    ::Details::Helper64<fits>::PutUnsigned(L, value);
                     return 1;
                 }
             };
@@ -218,8 +222,8 @@ namespace Script
             {
                 static uint64 Read(lua_State* L, const int32 index)
                 {
-                    return Details::Helper64<sizeof(lua_Integer) >= sizeof(uint64)>::GetUnsigned(
-                        L, index);
+                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                    return ::Details::Helper64<fits>::GetUnsigned(L, index);
                 }
             };
 
@@ -288,7 +292,8 @@ namespace Script
             {
                 static int32 Write(lua_State* L, const int64 value)
                 {
-                    Details::Helper64<sizeof(lua_Integer) >= sizeof(uint64)>::PutSigned(L, value);
+                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                    ::Details::Helper64<fits>::PutSigned(L, value);
                     return 1;
                 }
             };
@@ -298,8 +303,8 @@ namespace Script
             {
                 static int64 Read(lua_State* L, const int32 index)
                 {
-                    return Details::Helper64<sizeof(lua_Integer) >= sizeof(int64)>::GetUnsigned(
-                        L, index);
+                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                    return ::Details::Helper64<fits>::GetUnsigned(L, index);
                 }
             };
 
