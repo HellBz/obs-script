@@ -1,8 +1,8 @@
-### obs-script
+# obs-script
 
 A plugin for OBS Studio that allows for Lua to control elements of the application. Ideally one would be able to create and manage scenes based on arbitrary criteria, as well as manage the sources within those scenes based on whatever conditions they deem fit.
 
-## General Rules
+### General Rules
 * Almost Always Auto
     * prefer auto on left hand types
 * Prefer Const
