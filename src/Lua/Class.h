@@ -28,6 +28,8 @@
 
 namespace Script
 {
+    namespace CoreUtils = Utils;
+
     namespace Reflection
     {
         class ClassWalker;
@@ -47,8 +49,7 @@ namespace Script
              */
             static T* Check(lua_State* L, int32 arg)
             {
-                auto ptr =
-                    static_cast<T**>(luaL_checkudata(L, arg, ::Script::Utils::GetTypeName<T>()));
+                auto ptr = static_cast<T**>(luaL_checkudata(L, arg, CoreUtils::GetTypeName<T>()));
                 if (!ptr)
                     return nullptr;
 
@@ -63,8 +64,7 @@ namespace Script
              */
             static T* LightCheck(lua_State* L, int32 arg)
             {
-                auto ptr =
-                    static_cast<T**>(luaL_testudata(L, arg, ::Script::Utils::GetTypeName<T>()));
+                auto ptr = static_cast<T**>(luaL_testudata(L, arg, CoreUtils::GetTypeName<T>()));
                 if (!ptr)
                     return nullptr;
 
@@ -86,16 +86,16 @@ namespace Script
                     }
 
                     lua_pushcfunction(L, &Class<T>::New);
-                    lua_setfield(L, -2, ::Script::Utils::GetTypeName<T>());
+                    lua_setfield(L, -2, CoreUtils::GetTypeName<T>());
                     lua_pop(L, 1);
                 }
                 else
                 {
                     lua_pushcfunction(L, &Class<T>::New);
-                    lua_setglobal(L, ::Script::Utils::GetTypeName<T>());
+                    lua_setglobal(L, CoreUtils::GetTypeName<T>());
                 }
 
-                const auto typeName = ::Script::Utils::GetTypeName<T>();
+                const auto typeName = CoreUtils::GetTypeName<T>();
                 luaL_newmetatable(L, typeName);
                 int metatable = lua_gettop(L);
 
@@ -147,9 +147,9 @@ namespace Script
             static int32 ToString(lua_State* L)
             {
                 if (auto ptr = Class<T>::LightCheck(L, -1))
-                    lua_pushfstring(L, "%s (%p)", ::Script::Utils::GetTypeName<T>(), ptr);
+                    lua_pushfstring(L, "%s (%p)", CoreUtils::GetTypeName<T>(), ptr);
                 else
-                    lua_pushfstring(L, "%s (nil)", ::Script::Utils::GetTypeName<T>());
+                    lua_pushfstring(L, "%s (nil)", CoreUtils::GetTypeName<T>());
 
                 return 1;
             }
@@ -198,7 +198,7 @@ namespace Script
 
             static int32 Set(lua_State* L)
             {
-                const auto className = ::Script::Utils::GetTypeName<T>();
+                const auto className = CoreUtils::GetTypeName<T>();
 
                 lua_getmetatable(L, 1);
                 lua_pushvalue(L, 2);

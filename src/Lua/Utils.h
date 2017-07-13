@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "Utils/TypeNames.h"
+
 #include <string>
 #include <xtr1common>
 
@@ -119,6 +121,8 @@ namespace Details
 
 namespace Script
 {
+    namespace CoreUtils = Utils;
+
     namespace Lua
     {
         namespace Utils
@@ -446,7 +450,7 @@ namespace Script
                     auto dest = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
                     *dest     = value;
 
-                    luaL_getmetatable(L, ::Script::Utils::GetTypeName<T>());
+                    luaL_getmetatable(L, CoreUtils::GetTypeName<T>());
                     lua_setmetatable(L, -2);
 
                     return 1;
@@ -458,8 +462,8 @@ namespace Script
             {
                 static T* Read(lua_State* L, const int32 index)
                 {
-                    T** result = static_cast<T**>(
-                        luaL_checkudata(L, index, ::Script::Utils::GetTypeName<T>()));
+                    auto result =
+                        static_cast<T**>(luaL_checkudata(L, index, CoreUtils::GetTypeName<T>()));
                     if (result)
                         return *result;
 
