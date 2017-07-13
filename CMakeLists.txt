@@ -51,6 +51,7 @@ set(INCLUDES
     src/Lua/Script.h
     src/Lua/Function.h
     src/Lua/Class.h
+    src/Lua/Utils.h
     src/Reflection/ClassWalker.h
     src/Reflection/Function.h
     src/Reflection/ClassRegistry.h
