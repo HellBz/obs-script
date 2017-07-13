@@ -35,4 +35,6 @@ namespace Script
     using null   = decltype(nullptr);
 
 #define UNIMPLEMENTED() assert(!"This function is not implemented.")
+
+#define UNUSED(x) ((void)(x))
 }
