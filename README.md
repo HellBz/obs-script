@@ -2,6 +2,12 @@
 
 A plugin for OBS Studio that allows for Lua to control elements of the application. Ideally one would be able to create and manage scenes based on arbitrary criteria, as well as manage the sources within those scenes based on whatever conditions they deem fit.
 
+### Building
+* cd $PathToObs\plugins
+* ```git clone --recursive https://github.com/SammyJames/obs-script.git```
+* open $PathToObs\plugins\CMakeLists.txt 
+* at the bottom add ```add_subdirectory(obs-script)```
+
 ### General Rules
 * Almost Always Auto
     * prefer auto on left hand types
