@@ -9,7 +9,7 @@ A plugin for OBS Studio that allows for Lua to control elements of the applicati
     * a good rule of thumb
 * Prefer using over typedef
 * Name template with a T
-    * ```cpp template <typename TArg>```
+    * ```template <typename TArg>```
 * CamelCase for classes and structs
 * Match namespaces to folder structure
     * this allows for simpler naming
@@ -19,8 +19,8 @@ A plugin for OBS Studio that allows for Lua to control elements of the applicati
 * Any non-default constructor should be explicit
 * use override
 * Prefer to use constexpr and typed versions of type_traits
-    * ```cpp std::is_same_v<T>``` over ```cpp std::is_same<T>::value```
-    * ```cpp std::remove_const_t<T>``` over ```cpp typename std::remove_const<T>::type```
+    * ```std::is_same_v<T>``` over ```std::is_same<T>::value```
+    * ```std::remove_const_t<T>``` over ```typename std::remove_const<T>::type```
     * etc
 * Use clang-format
     * I like to have consistent code, try not to deviate from the format
