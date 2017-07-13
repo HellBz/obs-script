@@ -161,6 +161,8 @@ namespace Script
             {
                 static uint8 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<uint8>(result);
                 }
@@ -181,6 +183,8 @@ namespace Script
             {
                 static uint16 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<uint16>(result);
                 }
@@ -201,6 +205,8 @@ namespace Script
             {
                 static uint32 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<uint32>(result);
                 }
@@ -242,6 +248,8 @@ namespace Script
             {
                 static int8 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<int8>(result);
                 }
@@ -262,6 +270,8 @@ namespace Script
             {
                 static int16 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<int16>(result);
                 }
@@ -282,6 +292,8 @@ namespace Script
             {
                 static int32 Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isinteger(L, index));
+
                     auto result = lua_tointeger(L, index);
                     return static_cast<int32>(result);
                 }
@@ -323,6 +335,8 @@ namespace Script
             {
                 static bool Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isboolean(L, index));
+
                     auto result = lua_toboolean(L, index);
                     return !!result;
                 }
@@ -343,6 +357,8 @@ namespace Script
             {
                 static float Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isnumber(L, index));
+
                     auto result = lua_tonumber(L, index);
                     return static_cast<float>(result);
                 }
@@ -363,6 +379,8 @@ namespace Script
             {
                 static double Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isnumber(L, index));
+
                     auto result = lua_tonumber(L, index);
                     return static_cast<double>(result);
                 }
@@ -383,6 +401,8 @@ namespace Script
             {
                 static std::string Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isstring(L, index));
+
                     std::string result = lua_tostring(L, index);
                     return result;
                 }
@@ -403,6 +423,7 @@ namespace Script
             {
                 static const char* Read(lua_State* L, const int32 index)
                 {
+                    assert(lua_isstring(L, index));
                     return lua_tostring(L, index);
                 }
             };
