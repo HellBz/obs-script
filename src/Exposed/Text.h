@@ -31,8 +31,6 @@ using namespace Script::Reflection;
 class TextSource : public Source
 {
 public:
-    static TextSource* New();
-
     void SetText(const std::string& text);
     const std::string& GetText() const;
 
@@ -49,7 +47,6 @@ struct RegisterClass<TextSource>
     {
         RegisterClass<Source>::Register(walker);
 
-        walker.AddFunction("New", &TextSource::New);
         walker.AddFunction("SetText", &TextSource::SetText);
         walker.AddFunction("GetText", &TextSource::GetText);
     }

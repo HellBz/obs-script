@@ -59,11 +59,10 @@ namespace Script
             {
                 UNUSED(L);
 
-                auto self = reinterpret_cast<const TChild*>(this);
-                return self->operator()(
-                    static_cast<TObject*>(data),
-                    Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                        L, Index)...);
+                const auto& self = *reinterpret_cast<const TChild*>(this);
+                return self(static_cast<TObject*>(data),
+                            Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
+                                L, Index + 2)...);
             }
 
             std::string m_name;
@@ -91,11 +90,10 @@ namespace Script
             {
                 UNUSED(L);
 
-                auto self = reinterpret_cast<const TChild*>(this);
-                self->operator()(
-                    static_cast<TObject*>(data),
-                    Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                        L, Index)...);
+                const auto& self = *reinterpret_cast<const TChild*>(this);
+                self(static_cast<TObject*>(data),
+                     Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
+                         L, Index + 2)...);
             }
 
             std::string m_name;
@@ -126,10 +124,9 @@ namespace Script
             {
                 UNUSED(L);
 
-                auto self = reinterpret_cast<const TChild*>(this);
-                return self->operator()(
-                    Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                        L, Index)...);
+                const auto& self = *reinterpret_cast<const TChild*>(this);
+                return self(Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
+                    L, Index + 2)...);
             }
 
             std::string m_name;
@@ -158,10 +155,9 @@ namespace Script
             {
                 UNUSED(L);
 
-                auto self = reinterpret_cast<const TChild*>(this);
-                self->operator()(
-                    Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                        L, Index)...);
+                const auto& self = *reinterpret_cast<const TChild*>(this);
+                self(Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
+                    L, Index + 2)...);
             }
 
             std::string m_name;

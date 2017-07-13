@@ -250,12 +250,8 @@ namespace Script
                 auto ptr          = static_cast<T**>(lua_touserdata(L, lua_upvalueindex(2)));
 
                 const auto& outline = Reflection::ClassRegistry::Find<T>();
-                if (outline.HasFunction(functionName))
-                {
-
-                    if (const auto& method = outline.GetFunction(functionName))
-                        return method->Invoke(L, *ptr);
-                }
+                if (const auto& method = outline.GetFunction(functionName))
+                    return method->Invoke(L, *ptr);
 
                 luaL_error(L,
                            "Error: unable to find method %s of type %s",

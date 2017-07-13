@@ -33,13 +33,13 @@ namespace Constants
     static const char* const File = "file";
 }
 
-/*static*/ TextSource* TextSource::New()
-{
-    return nullptr;
-}
-
 void TextSource::SetText(const std::string& text)
 {
+    UNUSED(text);
+
+    if (!m_source)
+        return;
+
     auto props = obs_source_properties(m_source);
 
     if (!props)
