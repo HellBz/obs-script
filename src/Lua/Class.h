@@ -130,15 +130,8 @@ namespace Script
 
             static int32 New(lua_State* L)
             {
-                auto ptr      = new T();
-                auto userData = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
-
-                *userData = ptr;
-
-                luaL_getmetatable(L, ::Script::Utils::GetTypeName<T>());
-                lua_setmetatable(L, -2);
-
-                return 1;
+                auto ptr = new T();
+                return Utils::Writer<T*>::Write(L, ptr);
             }
 
             static int32 Collect(lua_State* L)
