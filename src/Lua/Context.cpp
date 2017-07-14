@@ -40,14 +40,8 @@ namespace Script
 
             for (auto i = 0; i < argCount; ++i)
             {
-                if (lua_isstring(L, i))
-                {
-                    const auto str = lua_tostring(L, i);
-                    blog(LOG_DEBUG, "[Script]: %s", str);
-                }
-                else
-                {
-                }
+                const auto str = luaL_tolstring(L, argCount, nullptr);
+                blog(LOG_DEBUG, "[Script]: %s", str);
             }
 
             return 0;
