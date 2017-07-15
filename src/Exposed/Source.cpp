@@ -29,21 +29,16 @@ Source::Source()
 {
 }
 
-Source::Source(obs_source_t* source)
-    : m_source(source)
-{
-    obs_source_addref(m_source);
-}
-
-Source::Source(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys)
-    : Source(obs_source_create(id, name, settings, hotkeys))
-{
-}
-
 Source::~Source()
 {
     obs_source_release(m_source);
     m_source = nullptr;
+}
+
+void Source::Init(const char* id, const char* name)
+{
+    m_source = obs_source_create(id, name, nullptr, nullptr);
+    obs_source_addref(m_source);
 }
 
 const char* Source::GetId() const

@@ -35,6 +35,11 @@ void obs_module_unload(void)
     Script::Module::Get().OnUnload();
 }
 
+void obs_module_post_load(void)
+{
+    Script::Module::Get().OnPostLoad();
+}
+
 const char* obs_module_name(void)
 {
     return "Script Plugin";

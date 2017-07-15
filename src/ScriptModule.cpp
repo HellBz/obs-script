@@ -31,15 +31,16 @@
 
 namespace Script
 {
-    bool Module::OnLoad()
+    bool Module::OnLoad() { return true; }
+
+    void Module::OnUnload() { m_manager.Finalize(); }
+
+    void Module::OnPostLoad()
     {
         m_manager.SetContext(std::make_shared<Lua::Context>());
         m_manager.Initialize();
         m_manager.AddScript("X:\\obs-studio\\plugins\\obs-script\\test\\test.lua");
-        return true;
     }
-
-    void Module::OnUnload() { m_manager.Finalize(); }
 
     /*static*/ Module& Module::Get()
     {

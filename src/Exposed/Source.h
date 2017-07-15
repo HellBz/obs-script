@@ -35,9 +35,9 @@ class Source
 {
 public:
     Source();
-    explicit Source(const char* id, const char* name, obs_data_t* settings, obs_data_t* hotkeys);
-    explicit Source(obs_source_t* source);
     ~Source();
+
+    void Init(const char* id, const char* name);
 
     const char* GetId() const;
     const char* GetName() const;
@@ -66,6 +66,7 @@ struct RegisterClass<Source>
 {
     static void Register(ClassWalker& walker)
     {
+        walker.AddFunction("Init", &Source::Init);
         walker.AddFunction("GetId", &Source::GetId);
         walker.AddFunction("GetName", &Source::GetName);
         walker.AddFunction("GetWidth", &Source::GetWidth);

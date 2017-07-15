@@ -33,6 +33,8 @@ namespace Script
 
         void OnUnload();
 
+        void OnPostLoad();
+
         static Module& Get();
 
     private:
