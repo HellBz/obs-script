@@ -60,9 +60,10 @@ namespace Script
                 UNUSED(L);
 
                 const auto& self = *reinterpret_cast<const TChild*>(this);
-                return self(static_cast<TObject*>(data),
-                            Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                                L, Index + 2)...);
+                return self(
+                    static_cast<TObject*>(data),
+                    Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
+                        L, Index + 2)...); // offset by 2, 1 for self and 1 for the first parameter
             }
 
             std::string m_name;
@@ -93,7 +94,7 @@ namespace Script
                 const auto& self = *reinterpret_cast<const TChild*>(this);
                 self(static_cast<TObject*>(data),
                      Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                         L, Index + 2)...);
+                         L, Index + 2)...); // offset by 2, 1 for self and 1 for the first parameter
             }
 
             std::string m_name;
@@ -126,7 +127,7 @@ namespace Script
 
                 const auto& self = *reinterpret_cast<const TChild*>(this);
                 return self(Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                    L, Index + 2)...);
+                    L, Index + 1)...); // offset by 1 since Lua starts at 1
             }
 
             std::string m_name;
@@ -157,7 +158,7 @@ namespace Script
 
                 const auto& self = *reinterpret_cast<const TChild*>(this);
                 self(Utils::Reader<remove_cr<std::tuple_element_t<Index, ArgsType>>>::Read(
-                    L, Index + 2)...);
+                    L, Index + 1)...); // offset by 1 since Lua starts at 1
             }
 
             std::string m_name;
