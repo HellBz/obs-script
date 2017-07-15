@@ -1,7 +1,7 @@
-// Copyright © Samantha James
+Ôªø// Copyright ¬© Samantha James
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the ìSoftwareî), to deal
+// of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
@@ -10,7 +10,7 @@
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
 
-// THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -37,8 +37,6 @@ public:
     Source();
     ~Source();
 
-    void Init(const char* id, const char* name);
-
     const char* GetId() const;
     const char* GetName() const;
 
@@ -58,7 +56,9 @@ public:
     bool operator==(const Source& other) const;
 
 protected:
+    void _CreateSource(const char* id, const char* name);
     obs_source_t* m_source;
+    obs_data_t* m_data;
 };
 
 template <>
@@ -66,7 +66,6 @@ struct RegisterClass<Source>
 {
     static void Register(ClassWalker& walker)
     {
-        walker.AddFunction("Init", &Source::Init);
         walker.AddFunction("GetId", &Source::GetId);
         walker.AddFunction("GetName", &Source::GetName);
         walker.AddFunction("GetWidth", &Source::GetWidth);

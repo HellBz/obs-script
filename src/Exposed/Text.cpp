@@ -1,7 +1,7 @@
-// Copyright © Samantha James
+Ôªø// Copyright ¬© Samantha James
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the ìSoftwareî), to deal
+// of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
@@ -10,7 +10,7 @@
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
 
-// THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -20,11 +20,11 @@
 
 #include "types.h"
 
+#include <obs.h>
+
 #include "Text.h"
 
-extern "C" {
-#include <obs.h>
-}
+#include "Utils\Misc.h"
 
 namespace Constants
 {
@@ -33,19 +33,21 @@ namespace Constants
     static const char* const File = "file";
 }
 
+TextSource::TextSource()
+{
+    const auto randName = Utils::Misc::RandomTypeName<TextSource>();
+    _CreateSource("text_gdiplus", randName.c_str());
+}
+
 void TextSource::SetText(const std::string& text)
 {
-    UNUSED(text);
-
     if (!m_source)
         return;
 
-    auto props = obs_source_properties(m_source);
-
-    if (!props)
+    if (!m_data)
         return;
 
-    // auto data = obs_get_source_defaults();
+    obs_data_set_string(m_data, Constants::Text, text.c_str());
 }
 
 const std::string& TextSource::GetText() const
