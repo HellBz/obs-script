@@ -1,7 +1,7 @@
-// Copyright © Samantha James
+Ôªø// Copyright ¬© Samantha James
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the ìSoftwareî), to deal
+// of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
@@ -10,7 +10,7 @@
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
 
-// THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -131,345 +131,217 @@ namespace Script
             constexpr bool IsSupportedType = ::Details::Enabled<T>::value;
 
             template <typename T>
-            struct Writer
-            {
-                static int32 Write(lua_State* L, T)
-                {
-                    static_assert(!sizeof(T), "unsupported type");
-                    return 0;
-                }
-            };
+            static int32 Write(lua_State* L, const T);
 
             template <typename T>
-            struct Reader
-            {
-                static T Read(lua_State* L, const int32)
-                {
-                    static_assert(!sizeof(T), "unsupported type");
-                    return T();
-                }
-            };
-
-            template <>
-            struct Writer<uint8>
-            {
-                static int32 Write(lua_State* L, const uint8 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<uint8>
-            {
-                static uint8 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<uint8>(result);
-                }
-            };
-
-            template <>
-            struct Writer<uint16>
-            {
-                static int32 Write(lua_State* L, const uint16 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<uint16>
-            {
-                static uint16 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<uint16>(result);
-                }
-            };
-
-            template <>
-            struct Writer<uint32>
-            {
-                static int32 Write(lua_State* L, const uint32 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<uint32>
-            {
-                static uint32 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<uint32>(result);
-                }
-            };
-
-            template <>
-            struct Writer<uint64>
-            {
-                static int32 Write(lua_State* L, const uint64 value)
-                {
-                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
-                    ::Details::Helper64<fits>::PutUnsigned(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<uint64>
-            {
-                static uint64 Read(lua_State* L, const int32 index)
-                {
-                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
-                    return ::Details::Helper64<fits>::GetUnsigned(L, index);
-                }
-            };
-
-            template <>
-            struct Writer<int8>
-            {
-                static int32 Write(lua_State* L, const int8 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<int8>
-            {
-                static int8 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<int8>(result);
-                }
-            };
-
-            template <>
-            struct Writer<int16>
-            {
-                static int32 Write(lua_State* L, const int16 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<int16>
-            {
-                static int16 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<int16>(result);
-                }
-            };
-
-            template <>
-            struct Writer<int32>
-            {
-                static int32 Write(lua_State* L, const int32 value)
-                {
-                    lua_pushinteger(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<int32>
-            {
-                static int32 Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isinteger(L, index));
-
-                    auto result = lua_tointeger(L, index);
-                    return static_cast<int32>(result);
-                }
-            };
-
-            template <>
-            struct Writer<int64>
-            {
-                static int32 Write(lua_State* L, const int64 value)
-                {
-                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
-                    ::Details::Helper64<fits>::PutSigned(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<int64>
-            {
-                static int64 Read(lua_State* L, const int32 index)
-                {
-                    constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
-                    return ::Details::Helper64<fits>::GetUnsigned(L, index);
-                }
-            };
-
-            template <>
-            struct Writer<bool>
-            {
-                static int32 Write(lua_State* L, const bool value)
-                {
-                    lua_pushboolean(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<bool>
-            {
-                static bool Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isboolean(L, index));
-
-                    auto result = lua_toboolean(L, index);
-                    return !!result;
-                }
-            };
-
-            template <>
-            struct Writer<float>
-            {
-                static int32 Write(lua_State* L, const float value)
-                {
-                    lua_pushnumber(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<float>
-            {
-                static float Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isnumber(L, index));
-
-                    auto result = lua_tonumber(L, index);
-                    return static_cast<float>(result);
-                }
-            };
-
-            template <>
-            struct Writer<double>
-            {
-                static int32 Write(lua_State* L, const double value)
-                {
-                    lua_pushnumber(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<double>
-            {
-                static double Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isnumber(L, index));
-
-                    auto result = lua_tonumber(L, index);
-                    return static_cast<double>(result);
-                }
-            };
-
-            template <>
-            struct Writer<std::string>
-            {
-                static int32 Write(lua_State* L, const std::string& value)
-                {
-                    lua_pushstring(L, value.c_str());
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<std::string>
-            {
-                static std::string Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isstring(L, index));
-
-                    std::string result = lua_tostring(L, index);
-                    return result;
-                }
-            };
-
-            template <>
-            struct Writer<const char*>
-            {
-                static int32 Write(lua_State* L, const char* const value)
-                {
-                    lua_pushstring(L, value);
-                    return 1;
-                }
-            };
-
-            template <>
-            struct Reader<const char*>
-            {
-                static const char* Read(lua_State* L, const int32 index)
-                {
-                    assert(lua_isstring(L, index));
-                    return lua_tostring(L, index);
-                }
-            };
-
-            template <size_t size>
-            struct Writer<const char[ size ]>
-            {
-                static int32 Write(lua_State* L, const char (&value)[ size ])
-                {
-                    lua_pushstring(L, value);
-                    return 1;
-                }
-            };
+            static void Read(lua_State* L, const int32, T&);
 
             template <typename T>
-            struct Writer<T*>
+            T Get(lua_State* L, const int32 index)
             {
-                static int32 Write(lua_State* L, T* value)
-                {
-                    auto dest = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
-                    *dest     = value;
-
-                    luaL_getmetatable(L, CoreUtils::GetTypeName<T>());
-                    lua_setmetatable(L, -2);
-
-                    return 1;
-                }
-            };
+                T result;
+                Read(L, index, result);
+                return result;
+            }
 
             template <typename T>
-            struct Reader<T*>
+            inline int32 Write(lua_State* L, const T)
             {
-                static T* Read(lua_State* L, const int32 index)
-                {
-                    auto result =
-                        static_cast<T**>(luaL_checkudata(L, index, CoreUtils::GetTypeName<T>()));
-                    if (result)
-                        return *result;
+                static_assert(!sizeof(T), "unsupported type");
+                return 1;
+            }
 
-                    return nullptr;
-                }
-            };
+            template <>
+            inline int32 Write<uint8>(lua_State* L, const uint8 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<int8>(lua_State* L, const int8 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<uint16>(lua_State* L, const uint16 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<int16>(lua_State* L, const int16 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<uint32>(lua_State* L, const uint32 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<int32>(lua_State* L, const int32 value)
+            {
+                lua_pushinteger(L, value);
+                return 1;
+            }
+
+            template <typename T>
+            inline void Read(lua_State* L, const int32 index, T& result)
+            {
+                static_assert(!sizeof(T), "unsupported type");
+            }
+
+            template <>
+            inline void Read<uint8>(lua_State* L, const int32 index, uint8& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<uint8>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline void Read<int8>(lua_State* L, const int32 index, int8& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<int8>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline void Read<uint16>(lua_State* L, const int32 index, uint16& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<uint16>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline void Read<int16>(lua_State* L, const int32 index, int16& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<int16>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline void Read<uint32>(lua_State* L, const int32 index, uint32& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<uint32>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline void Read<int32>(lua_State* L, const int32 index, int32& result)
+            {
+                assert(lua_isinteger(L, index));
+                result = static_cast<int32>(lua_tointeger(L, index));
+            }
+
+            template <>
+            inline int32 Write<uint64>(lua_State* L, const uint64 value)
+            {
+                constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                ::Details::Helper64<fits>::PutSigned(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<uint64>(lua_State* L, const int32 index, uint64& result)
+            {
+                constexpr bool fits = sizeof(lua_Integer) >= sizeof(uint64);
+                result              = ::Details::Helper64<fits>::GetUnsigned(L, index);
+            }
+
+            template <>
+            inline int32 Write<int64>(lua_State* L, const int64 value)
+            {
+                constexpr bool fits = sizeof(lua_Integer) >= sizeof(int64);
+                ::Details::Helper64<fits>::PutSigned(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<int64>(lua_State* L, const int32 index, int64& result)
+            {
+                constexpr bool fits = sizeof(lua_Integer) >= sizeof(int64);
+                result              = ::Details::Helper64<fits>::GetUnsigned(L, index);
+            }
+
+            template <>
+            inline int32 Write<bool>(lua_State* L, const bool value)
+            {
+                lua_pushboolean(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<bool>(lua_State* L, const int32 index, bool& result)
+            {
+                assert(lua_isboolean(L, index));
+                result = !!lua_toboolean(L, index);
+            }
+
+            template <>
+            inline int32 Write<float>(lua_State* L, const float value)
+            {
+                lua_pushnumber(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<float>(lua_State* L, const int32 index, float& result)
+            {
+                assert(lua_isnumber(L, index));
+
+                result = static_cast<float>(lua_tonumber(L, index));
+            }
+
+            template <>
+            inline int32 Write<double>(lua_State* L, const double value)
+            {
+                lua_pushnumber(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<double>(lua_State* L, const int32 index, double& result)
+            {
+                assert(lua_isnumber(L, index));
+
+                result = static_cast<double>(lua_tonumber(L, index));
+            }
+
+            template <>
+            inline int32 Write<std::string>(lua_State* L, const std::string value)
+            {
+                lua_pushstring(L, value.c_str());
+                return 1;
+            }
+
+            template <>
+            inline int32 Write<const char*>(lua_State* L, const char* const value)
+            {
+                lua_pushstring(L, value);
+                return 1;
+            }
+
+            template <>
+            inline void Read<const char*>(lua_State* L, const int32 index, const char*& result)
+            {
+                assert(lua_isstring(L, index));
+                result = lua_tostring(L, index);
+            }
+
+            template <>
+            inline void Read<std::string>(lua_State* L, const int32 index, std::string& result)
+            {
+                assert(lua_isstring(L, index));
+                result = lua_tostring(L, index);
+            }
         }
     }
 }
