@@ -99,23 +99,23 @@ namespace Script
                 luaL_newmetatable(L, typeName);
                 int metatable = lua_gettop(L);
 
-                lua_pushstring(L, "__gc");
+                Utils::Write(L, "__gc");
                 lua_pushcfunction(L, &Class<T>::Collect);
                 lua_settable(L, metatable);
 
-                lua_pushstring(L, "__tostring");
+                Utils::Write(L, "__tostring");
                 lua_pushcfunction(L, &Class<T>::ToString);
                 lua_settable(L, metatable);
 
-                lua_pushstring(L, "__eq");
+                Utils::Write(L, "__eq");
                 lua_pushcfunction(L, &Class<T>::Equal);
                 lua_settable(L, metatable);
 
-                lua_pushstring(L, "__index");
+                Utils::Write(L, "__index");
                 lua_pushcfunction(L, &Class<T>::Get);
                 lua_settable(L, metatable);
 
-                lua_pushstring(L, "__newindex");
+                Utils::Write(L, "__newindex");
                 lua_pushcfunction(L, &Class<T>::Set);
                 lua_settable(L, metatable);
 
@@ -257,7 +257,7 @@ namespace Script
                 luaL_error(L,
                            "Error: unable to find method %s of type %s",
                            functionName,
-                           ::Script::Utils::GetTypeName<T>());
+                           CoreUtils::GetTypeName<T>());
                 return 0;
             }
         };
